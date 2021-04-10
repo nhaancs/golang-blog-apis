@@ -9,24 +9,25 @@ import (
 )
 
 type ProductCategory struct {
-	// ID        uint           `json:"id"`
+	ID        uint           `json:"id"`
 	CreatedAt time.Time      `json:"createdAt"`
 	UpdatedAt time.Time      `json:"updatedAt"`
 	DeletedAt gorm.DeletedAt `json:"deletedAt"`
-
-	Name string `json:"name" gorm:"column:name;not null;"`
-	Slug string `json:"slug" gorm:"column:slug;primaryKey;"`
-	Desc string `json:"desc" gorm:"column:desc;"`
+	Name      string         `json:"name"`
+	Slug      string         `json:"slug"`
+	Desc      string         `json:"desc"`
 }
 
-func (pc ProductCategory) TableName() string {
+func (ProductCategory) TableName() string {
 	return "product_categories"
 }
 
 type ProductCategoryCreate struct {
-	Name string `json:"name"`
-	Desc string `json:"desc"`
-	Slug string `json:"slug"`
+	ID        uint      `json:"id"`
+	CreatedAt time.Time `json:"createdAt"`
+	Name      string    `json:"name"`
+	Desc      string    `json:"desc"`
+	Slug      string    `json:"slug"`
 }
 
 func (ProductCategoryCreate) TableName() string {

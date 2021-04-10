@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"nhaancs/component"
-	"nhaancs/modules/productcategory/productcategorymodel"
 	"nhaancs/modules/productcategory/productcategorytransport/ginproductcategory"
 	"os"
 
@@ -20,9 +19,10 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	if err := db.AutoMigrate(&productcategorymodel.ProductCategory{}); err != nil {
-		log.Fatalln(err)
-	}
+	// TODO: apply https://github.com/golang-migrate/migrate
+	// if err := db.AutoMigrate(&productcategorymodel.ProductCategory{}); err != nil {
+	// 	log.Fatalln(err)
+	// }
 
 	if err := runService(db); err != nil {
 		log.Fatalln(err)
