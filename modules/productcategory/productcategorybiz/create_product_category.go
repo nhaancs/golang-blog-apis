@@ -36,11 +36,12 @@ func (biz *createProductCategoryBiz) CreateProductCategory(
 
 	data.Slug = slugify.Slugify(data.Name)
 	{
-		res, _ := biz.store.FindDataByCondition(ctx, map[string]interface{}{"slug": data.Slug});
+		res, er := biz.store.FindDataByCondition(ctx, map[string]interface{}{"slug": data.Slug});
 
-		if res != nil {
-			return errors.New("the product category already exists")
-		}
+		//todo: check err instead
+		// if res != nil {
+		// 	return errors.New("the product category already exists")
+		// }
 	}
 
 	return biz.store.Create(ctx, data)

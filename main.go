@@ -35,7 +35,9 @@ func runService(db *gorm.DB) error {
 
 	productCategories := r.Group("/product-categories")
 	{
+		productCategories.GET("", ginproductcategory.ListProductCategory(appCtx))
 		productCategories.POST("", ginproductcategory.CreateProductCategory(appCtx))
+		productCategories.GET("/:slug", ginproductcategory.GetProductCategoryBySlug(appCtx))
 	}
 
 	return r.Run()

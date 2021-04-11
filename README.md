@@ -1,7 +1,7 @@
 # ecommerce
 
 ## Questions
-- A Việt ơi ví dụ trong tầng biz e validate thấy email invalid và muốn tầng transport trả về status 400 cho user, còn khi insert xuống db lỗi e muốn trả về 500 thì làm như thế nào ak a
+- nếu lỗi trong goroutine khác thì sau khi recover mình muốn trả về message cho user thi sao a 
 
 - 2 component cùng layer co the goi lan nhau, layer o tren co the gọi xuống bên dưới, Có khi nào 2 biz gọi nhau?
 
