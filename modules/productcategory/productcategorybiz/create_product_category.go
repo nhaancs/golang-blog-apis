@@ -30,13 +30,13 @@ func (biz *createProductCategoryBiz) CreateProductCategory(
 	ctx context.Context, 
 	data *productcategorymodel.ProductCategoryCreate,
 ) error {
-	if err := data.Validate(); err != nil {
+	if err := data.ValidateCreate(); err != nil {
 		return err
 	}
 
 	data.Slug = slugify.Slugify(data.Name)
 	{
-		res, er := biz.store.FindDataByCondition(ctx, map[string]interface{}{"slug": data.Slug});
+		res, err := biz.store.FindDataByCondition(ctx, map[string]interface{}{"slug": data.Slug});
 
 		//todo: check err instead
 		// if res != nil {

@@ -6,18 +6,17 @@ import (
 	"time"
 )
 
-type ProductCategoryCreate struct {
-	CreatedAt *time.Time `json:"createdAt"`
+type ProductCategoryUpdate struct {
+	UpdatedAt *time.Time `json:"createdAt"`
 	Name      string     `json:"name"`
-	Desc      string     `json:"desc"`
-	Slug      string     `json:"slug"`
+	Desc      *string     `json:"desc"`
 }
 
-func (ProductCategoryCreate) TableName() string {
+func (ProductCategoryUpdate) TableName() string {
 	return ProductCategory{}.TableName()
 }
 
-func (data *ProductCategoryCreate) ValidateCreate() error {
+func (data *ProductCategoryCreate) ValidateUpdate() error {
 	data.Name = strings.TrimSpace(data.Name)
 
 	if len(data.Name) == 0 {
