@@ -7,7 +7,7 @@ import (
 )
 
 type ProductCategoryUpdate struct {
-	UpdatedAt *time.Time `json:"createdAt"`
+	UpdatedAt *time.Time `json:"createdAt" gorm:"autoUpdateTime;"`
 	Name      string     `json:"name"`
 	Desc      *string     `json:"desc"`
 }

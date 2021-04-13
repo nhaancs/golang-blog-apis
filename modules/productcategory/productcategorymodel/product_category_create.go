@@ -7,7 +7,7 @@ import (
 )
 
 type ProductCategoryCreate struct {
-	CreatedAt *time.Time `json:"createdAt"`
+	CreatedAt *time.Time `json:"createdAt" gorm:"autoCreateTime;"`
 	Name      string     `json:"name"`
 	Desc      string     `json:"desc"`
 	Slug      string     `json:"slug"`

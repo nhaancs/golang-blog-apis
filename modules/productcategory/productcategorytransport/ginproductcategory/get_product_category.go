@@ -19,9 +19,8 @@ func GetProductCategoryBySlug(appCtx component.AppContext) gin.HandlerFunc {
 
 		data, err := biz.GetProductCategoryBySlug(c.Request.Context(), slug)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, map[string]interface{}{
-				"errors": err.Error(),
-			})
+			c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
+			return
 		}
 
 		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data))
