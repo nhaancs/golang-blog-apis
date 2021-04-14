@@ -22,7 +22,6 @@ func CreateProductCategory(appCtx component.AppContext) gin.HandlerFunc {
 
 		store := productcategorystore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := productcategorybiz.NewCreateProductCategoryBiz(store)
-
 		if err := biz.CreateProductCategory(c.Request.Context(), &data); err != nil {
 			// todo: new way to return appropriate http status
 			c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})

@@ -2,6 +2,7 @@ package productcategorybiz
 
 import (
 	"context"
+	"errors"
 	"nhaancs/modules/productcategory/productcategorymodel"
 )
 
@@ -24,6 +25,12 @@ func NewGetProductCategoryBiz(store GetProductCategoryStore) *getProductCategory
 func (biz *getProductCategoryBiz) GetProductCategoryBySlug(ctx context.Context, slug string) (*productcategorymodel.ProductCategory, error) {
 	data, err := biz.store.FindDataByCondition(ctx, 
 		map[string]interface{}{"slug": slug})
+	if err != nil {
+		return nil, err
+	}
+	if data.DeletedAt != nil {
+		return nil, errors.New("data deleted")
+	}
 	
 	return data, err
 }

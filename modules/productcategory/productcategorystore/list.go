@@ -20,7 +20,9 @@ func (s *sqlStore) ListDataByCondition(
 		db = db.Preload(moreKeys[i])
 	}
 
-	db = db.Table(productcategorymodel.ProductCategory{}.TableName()).Where(conditions)
+	db = db.Table(productcategorymodel.ProductCategory{}.TableName()).
+		Where(conditions).
+		Where("deleted_at is null")
 
 	// custom filters here
 	// if v := filter; v != nil {

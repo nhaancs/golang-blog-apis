@@ -2,7 +2,10 @@ package productcategorystore
 
 import (
 	"context"
+	"nhaancs/common"
 	"nhaancs/modules/productcategory/productcategorymodel"
+
+	"gorm.io/gorm"
 )
 
 func (s *sqlStore) FindDataByCondition(
@@ -19,6 +22,9 @@ func (s *sqlStore) FindDataByCondition(
 	}
 
 	if err := db.Where(conditions).First(&result).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, common.ErrRecordNotFound
+		}
 		return nil, err
 	}
 

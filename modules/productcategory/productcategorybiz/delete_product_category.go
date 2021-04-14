@@ -6,29 +6,28 @@ import (
 	"nhaancs/modules/productcategory/productcategorymodel"
 )
 
-type UpdateProductCategoryStore interface {
+type DeleteProductCategoryStore interface {
 	FindDataByCondition(
 		ctx context.Context,
 		conditions map[string]interface{},
 		moreKeys ...string,
 	) (*productcategorymodel.ProductCategory, error)
 
-	UpdateData(
+	SoftDelete(
 		ctx context.Context,
 		id int,
-		data *productcategorymodel.ProductCategoryUpdate,
 	) error
 }
 
-type updateProductCategoryBiz struct {
-	store UpdateProductCategoryStore
+type deleteProductCategoryBiz struct {
+	store DeleteProductCategoryStore
 }
 
-func NewUpdateProductCategoryBiz(store UpdateProductCategoryStore) *updateProductCategoryBiz {
-	return &updateProductCategoryBiz{store: store}
+func NewDeleteProductCategoryBiz(store DeleteProductCategoryStore) *deleteProductCategoryBiz {
+	return &deleteProductCategoryBiz{store: store}
 }
 
-func (biz *updateProductCategoryBiz) UpdateProductCategory(ctx context.Context, id int, data *productcategorymodel.ProductCategoryUpdate) error {
+func (biz *deleteProductCategoryBiz) DeleteProductCategory(ctx context.Context, id int) error {
 	oldData, err := biz.store.FindDataByCondition(ctx, map[string]interface{}{"id": id})
 	if err != nil {
 		return err
@@ -37,7 +36,7 @@ func (biz *updateProductCategoryBiz) UpdateProductCategory(ctx context.Context, 
 		return errors.New("data deleted")
 	}
 
-	if err := biz.store.UpdateData(ctx, id, data); err != nil {
+	if err := biz.store.SoftDelete(ctx, id); err != nil {
 		return err
 	}
 
