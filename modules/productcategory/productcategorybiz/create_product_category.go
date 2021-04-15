@@ -2,7 +2,6 @@ package productcategorybiz
 
 import (
 	"context"
-	"errors"
 	"nhaancs/common"
 	"nhaancs/modules/productcategory/productcategorymodel"
 
@@ -32,16 +31,20 @@ func (biz *createProductCategoryBiz) CreateProductCategory(
 	data *productcategorymodel.ProductCategoryCreate,
 ) error {
 	if err := data.ValidateCreate(); err != nil {
-		return err
+		return common.ErrInvalidRequest(err)
 	}
 
 	data.Slug = slugify.Slugify(data.Name)
 	{
 		_, err := biz.store.FindDataByCondition(ctx, map[string]interface{}{"slug": data.Slug});
 		if err != common.ErrRecordNotFound {
-			return errors.New("the product category already exists")
+			return common.ErrEntityExisted(productcategorymodel.EntityName, nil)
 		}
 	}
 
-	return biz.store.Create(ctx, data)
+	if err := biz.store.Create(ctx, data); err != nil {
+		return  common.ErrCannotCreateEntity(productcategorymodel.EntityName, err)
+	}
+
+	return nil
 }

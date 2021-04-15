@@ -15,15 +15,13 @@ func DeleteProductCategory(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
-			return
+			panic(common.ErrInvalidRequest(err))
 		}
 
 		store := productcategorystore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := productcategorybiz.NewDeleteProductCategoryBiz(store)
 		if err := biz.DeleteProductCategory(c.Request.Context(), id); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
-			return
+			panic(err)
 		}
 
 		c.JSON(http.StatusOK, common.SimpleSuccessResponse(true))

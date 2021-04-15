@@ -2,6 +2,7 @@ package productcategorystore
 
 import (
 	"context"
+	"nhaancs/common"
 	"nhaancs/modules/productcategory/productcategorymodel"
 	"time"
 )
@@ -15,7 +16,7 @@ func (s *sqlStore) SoftDelete(
 	db := s.db
 	if err := db.Table(productcategorymodel.ProductCategory{}.TableName()).Where("id = ?", id).Updates(
 		map[string]interface{}{"deleted_at": time.Now()}).Error; err != nil {
-		return err
+		return common.ErrDB(err)
 	}
 	return nil
 }

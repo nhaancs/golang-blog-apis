@@ -25,7 +25,7 @@ func (s *sqlStore) FindDataByCondition(
 		if err == gorm.ErrRecordNotFound {
 			return nil, common.ErrRecordNotFound
 		}
-		return nil, err
+		return nil, common.ErrDB(err)
 	}
 
 	return &result, nil

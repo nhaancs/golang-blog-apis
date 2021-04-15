@@ -15,24 +15,20 @@ func ListProductCategory(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var filter productcategorymodel.Filter
 		if err := c.ShouldBind(&filter); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"errors": err.Error()})
-			return
+			panic(common.ErrInvalidRequest(err))
 		}
 
 		var paging common.Paging
 		if err := c.ShouldBind(&paging); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"errors": err.Error()})
-			return
+			panic(common.ErrInvalidRequest(err))
 		}
 		paging.Fulfill()
 
 		store := productcategorystore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := productcategorybiz.NewListProductCategoryBiz(store)
-
 		result, err := biz.ListProductCategory(c.Request.Context(), &filter, &paging)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
-			return
+			panic(err)
 		}
 
 		c.JSON(http.StatusOK, common.NewSuccessResponse(result, &paging, &filter))

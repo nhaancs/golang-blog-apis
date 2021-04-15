@@ -16,11 +16,9 @@ func GetProductCategoryBySlug(appCtx component.AppContext) gin.HandlerFunc {
 
 		store := productcategorystore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := productcategorybiz.NewGetProductCategoryBiz(store)
-
 		data, err := biz.GetProductCategoryBySlug(c.Request.Context(), slug)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
-			return
+			panic(err)
 		}
 
 		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data))

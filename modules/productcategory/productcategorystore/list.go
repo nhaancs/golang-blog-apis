@@ -32,7 +32,7 @@ func (s *sqlStore) ListDataByCondition(
 	// }
 
 	if err := db.Count(&paging.Total).Error; err != nil {
-		return nil, err
+		return nil, common.ErrDB(err)
 	}
 
 	//todo: implement order
@@ -41,7 +41,7 @@ func (s *sqlStore) ListDataByCondition(
 		Limit(paging.Limit).
 		Order("id desc").
 		Find(&result).Error; err != nil {
-		return nil, err
+		return nil, common.ErrDB(err)
 	}
 
 	return result, nil

@@ -29,6 +29,11 @@ func (biz *listProductCategoryBiz) ListProductCategory(
 	filter *productcategorymodel.Filter,
 	paging *common.Paging,
 ) ([]productcategorymodel.ProductCategory, error) {
-	return biz.store.ListDataByCondition(ctx, nil, filter, paging)
+	res, err := biz.store.ListDataByCondition(ctx, nil, filter, paging)
+	if err != nil {
+		return nil, common.ErrCannotListEntity(productcategorymodel.EntityName, err)
+	}
+
+	return res, nil
 }
 

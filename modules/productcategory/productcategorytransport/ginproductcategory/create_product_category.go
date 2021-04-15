@@ -15,17 +15,13 @@ func CreateProductCategory(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data productcategorymodel.ProductCategoryCreate
 		if err := c.ShouldBind(&data); err != nil {
-			// todo: standardize error responses
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
+			panic(common.ErrInvalidRequest(err))
 		}
 
 		store := productcategorystore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := productcategorybiz.NewCreateProductCategoryBiz(store)
 		if err := biz.CreateProductCategory(c.Request.Context(), &data); err != nil {
-			// todo: new way to return appropriate http status
-			c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
-			return
+			panic(err)
 		}
 
 		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data))

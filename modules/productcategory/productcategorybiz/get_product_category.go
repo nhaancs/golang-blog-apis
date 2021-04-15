@@ -2,7 +2,7 @@ package productcategorybiz
 
 import (
 	"context"
-	"errors"
+	"nhaancs/common"
 	"nhaancs/modules/productcategory/productcategorymodel"
 )
 
@@ -26,11 +26,11 @@ func (biz *getProductCategoryBiz) GetProductCategoryBySlug(ctx context.Context, 
 	data, err := biz.store.FindDataByCondition(ctx, 
 		map[string]interface{}{"slug": slug})
 	if err != nil {
-		return nil, err
+		return nil, common.ErrCannotGetEntity(productcategorymodel.EntityName, err)
 	}
 	if data.DeletedAt != nil {
-		return nil, errors.New("data deleted")
+		return nil, common.ErrEntityDeleted(productcategorymodel.EntityName, nil)
 	}
 	
-	return data, err
+	return data, nil
 }

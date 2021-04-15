@@ -2,7 +2,7 @@ package productcategorybiz
 
 import (
 	"context"
-	"errors"
+	"nhaancs/common"
 	"nhaancs/modules/productcategory/productcategorymodel"
 )
 
@@ -31,14 +31,14 @@ func NewUpdateProductCategoryBiz(store UpdateProductCategoryStore) *updateProduc
 func (biz *updateProductCategoryBiz) UpdateProductCategory(ctx context.Context, id int, data *productcategorymodel.ProductCategoryUpdate) error {
 	oldData, err := biz.store.FindDataByCondition(ctx, map[string]interface{}{"id": id})
 	if err != nil {
-		return err
+		return common.ErrEntityNotFound(productcategorymodel.EntityName, err)
 	}
 	if oldData.DeletedAt != nil {
-		return errors.New("data deleted")
+		return common.ErrEntityDeleted(productcategorymodel.EntityName, nil)
 	}
 
 	if err := biz.store.UpdateData(ctx, id, data); err != nil {
-		return err
+		return common.ErrCannotUpdateEntity(productcategorymodel.EntityName, err)
 	}
 
 	return nil

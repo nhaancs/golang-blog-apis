@@ -16,21 +16,18 @@ func UpdateProductCategory(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
-			return
+			panic(common.ErrInvalidRequest(err))
 		}
 
 		var data productcategorymodel.ProductCategoryUpdate
 		if err := c.ShouldBind(&data); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
-			return
+			panic(common.ErrInvalidRequest(err))
 		}
 
 		store := productcategorystore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := productcategorybiz.NewUpdateProductCategoryBiz(store)
 		if err := biz.UpdateProductCategory(c.Request.Context(), id, &data); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
-			return
+			panic(err)
 		}
 
 		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data))

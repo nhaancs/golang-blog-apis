@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"nhaancs/component"
+	"nhaancs/middleware"
 	"nhaancs/modules/productcategory/productcategorytransport/ginproductcategory"
 	"os"
 
@@ -30,8 +31,10 @@ func main() {
 }
 
 func runService(db *gorm.DB) error {
-	r := gin.Default()
 	appCtx := component.NewAppContext(db)
+
+	r := gin.Default()
+	r.Use(middleware.Recover(appCtx))
 
 	productCategories := r.Group("/product-categories")
 	{
