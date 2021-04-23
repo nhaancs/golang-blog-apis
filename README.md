@@ -1,8 +1,11 @@
 # ecommerce
 
+todo:
+- request, response like nestjs app
+- product category => product
+- migration
+- move to sqlx
 ## Questions
-GIN_MODE=debug DB_CONN_STR="food_delivery:19e5a718a54a9fe0559dfbce6908@tcp(127.0.0.1:3306)/food_delivery?charset=utf8mb4&parseTime=True&loc=Local" go run .
-
 Thiet ke db cho khuyen mai free ship trong tphcm
 
 ## Entities

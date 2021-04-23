@@ -8,22 +8,21 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func main() {
-	// todo: new package for database
+	if err := godotenv.Load(".env"); err != nil {
+	  log.Fatalf("Error loading .env file")
+	}
+
 	dsn := os.Getenv("DB_CONN_STR")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalln(err)
 	}
-
-	// TODO: apply https://github.com/golang-migrate/migrate
-	// if err := db.AutoMigrate(&productcategorymodel.ProductCategory{}); err != nil {
-	// 	log.Fatalln(err)
-	// }
 
 	if err := runService(db); err != nil {
 		log.Fatalln(err)
