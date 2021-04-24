@@ -9,39 +9,63 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+
+	"github.com/golang-migrate/migrate"
+	"github.com/golang-migrate/migrate/database/mysql"
+	_ "github.com/golang-migrate/migrate/source/file"
+	"github.com/jmoiron/sqlx"
 )
 
 func main() {
 	if err := godotenv.Load(".env"); err != nil {
-	  log.Fatalf("Error loading .env file")
+	  log.Fatalln("Error loading .env file: ", err)
 	}
 
-	dsn := os.Getenv("DB_CONN_STR")
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatalln(err)
+	db, err := sqlx.Connect("mysql", os.Getenv("DB_URL"))
+    if err != nil {
+        log.Fatalln("Error connecting database: ", err)
+    }
+
+	if err := doMigrations(db); err != nil {
+		log.Fatalln("Error doing migrations: ", err)
 	}
 
 	if err := runService(db); err != nil {
-		log.Fatalln(err)
+		log.Fatalln("Error running service: ", err)
 	}
 }
 
-func runService(db *gorm.DB) error {
+func doMigrations(db *sqlx.DB) error {
+	driver, err := mysql.WithInstance(db.DB, &mysql.Config{})
+	if err != nil {
+		return err
+	}
+
+    m, err := migrate.NewWithDatabaseInstance("file://./migration", "mysql", driver)
+    if err != nil {
+		return err
+	}
+    err = m.Steps(1)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func runService(db *sqlx.DB) error {
 	appCtx := component.NewAppContext(db)
 
 	r := gin.Default()
 	r.Use(middleware.Recover(appCtx))
 
-	productCategories := r.Group("/product-categories")
+	products := r.Group("/products")
 	{
-		productCategories.GET("", ginproduct.ListProduct(appCtx))
-		productCategories.POST("", ginproduct.CreateProduct(appCtx))
-		productCategories.PATCH("/:id", ginproduct.UpdateProduct(appCtx))
-		productCategories.DELETE("/:id", ginproduct.DeleteProduct(appCtx))
-		productCategories.GET("/:slug", ginproduct.GetProductBySlug(appCtx))
+		products.GET("", ginproduct.ListProduct(appCtx))
+		products.POST("", ginproduct.CreateProduct(appCtx))
+		products.PATCH("/:id", ginproduct.UpdateProduct(appCtx))
+		products.DELETE("/:id", ginproduct.DeleteProduct(appCtx))
+		products.GET("/:slug", ginproduct.GetProductBySlug(appCtx))
 	}
 
 	return r.Run()

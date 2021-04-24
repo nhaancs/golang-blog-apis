@@ -1,19 +1,21 @@
 package component
 
-import "gorm.io/gorm"
+import (
+	"github.com/jmoiron/sqlx"
+)
 
 type AppContext interface {
-	GetMainDBConnection() *gorm.DB
+	GetMainDBConnection() *sqlx.DB
 }
 
 type appCtx struct {
-	db *gorm.DB
+	db *sqlx.DB
 }
 
-func NewAppContext(db *gorm.DB) *appCtx {
+func NewAppContext(db *sqlx.DB) *appCtx {
 	return &appCtx{db: db}
 }
 
-func (ctx *appCtx) GetMainDBConnection() *gorm.DB {
+func (ctx *appCtx) GetMainDBConnection() *sqlx.DB {
 	return ctx.db
 }

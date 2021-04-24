@@ -1,0 +1,26 @@
+CREATE TABLE `products` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `created_at` datetime DEFAULT (now()),
+  `updated_at` datetime,
+  `deleted_at` datetime,
+  `is_enabled` boolean DEFAULT true,
+  `name` varchar(200) NOT NULL,
+  `slug` varchar(255) UNIQUE NOT NULL,
+  `short_description` varchar(255) NOT NULL,
+  `long_description` text,
+  `images` json NOT NULL,
+  `unit` varchar(20) NOT NULL,
+  `price` decimal(13,2) NOT NULL,
+  `quantity` decimal(13,2) DEFAULT 0,
+  `is_unlimited` boolean DEFAULT false
+);
+
+CREATE INDEX `products_index_0` ON `products` (`deleted_at`);
+
+CREATE INDEX `products_index_1` ON `products` (`created_at`);
+
+CREATE INDEX `products_index_2` ON `products` (`is_enabled`);
+
+CREATE INDEX `products_index_3` ON `products` (`name`);
+
+CREATE INDEX `products_index_4` ON `products` (`slug`);
