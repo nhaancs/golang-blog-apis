@@ -11,9 +11,7 @@ startdb:
 	docker start mysql
 stopdb:
 	docker stop mysql
-migrateup:
-	migrate -database "${DB_URL}" -path "./migration/" -verbose up
 start:
 	go run .
 
-.PHONY: encode rundb startdb stopdb migrateup migratedown startserver
+.PHONY: rundb startdb stopdb start
