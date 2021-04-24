@@ -4,7 +4,7 @@ import (
 	"log"
 	"nhaancs/component"
 	"nhaancs/middleware"
-	"nhaancs/modules/productcategory/productcategorytransport/ginproductcategory"
+	"nhaancs/modules/product/producttransport/ginproduct"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -37,11 +37,11 @@ func runService(db *gorm.DB) error {
 
 	productCategories := r.Group("/product-categories")
 	{
-		productCategories.GET("", ginproductcategory.ListProductCategory(appCtx))
-		productCategories.POST("", ginproductcategory.CreateProductCategory(appCtx))
-		productCategories.PATCH("/:id", ginproductcategory.UpdateProductCategory(appCtx))
-		productCategories.DELETE("/:id", ginproductcategory.DeleteProductCategory(appCtx))
-		productCategories.GET("/:slug", ginproductcategory.GetProductCategoryBySlug(appCtx))
+		productCategories.GET("", ginproduct.ListProduct(appCtx))
+		productCategories.POST("", ginproduct.CreateProduct(appCtx))
+		productCategories.PATCH("/:id", ginproduct.UpdateProduct(appCtx))
+		productCategories.DELETE("/:id", ginproduct.DeleteProduct(appCtx))
+		productCategories.GET("/:slug", ginproduct.GetProductBySlug(appCtx))
 	}
 
 	return r.Run()

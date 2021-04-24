@@ -1,9 +1,9 @@
-package productcategorystore
+package productstore
 
 import (
 	"context"
 	"nhaancs/common"
-	"nhaancs/modules/productcategory/productcategorymodel"
+	"nhaancs/modules/product/productmodel"
 
 	"gorm.io/gorm"
 )
@@ -12,8 +12,8 @@ func (s *sqlStore) FindDataByCondition(
 	ctx context.Context,
 	conditions map[string]interface{},
 	moreKeys ...string,
-) (*productcategorymodel.ProductCategory, error) {
-	var result productcategorymodel.ProductCategory
+) (*productmodel.Product, error) {
+	var result productmodel.Product
 	db := s.db
 
 	for i := range moreKeys {

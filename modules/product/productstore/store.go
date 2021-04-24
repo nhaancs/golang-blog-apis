@@ -1,4 +1,4 @@
-package productcategorystore
+package productstore
 
 import (
 	"gorm.io/gorm"

@@ -1,4 +1,4 @@
-package productcategorymodel
+package productmodel
 
 import (
 	"errors"
@@ -6,22 +6,22 @@ import (
 	"time"
 )
 
-type ProductCategoryCreate struct {
+type ProductCreate struct {
 	CreatedAt *time.Time `json:"createdAt" gorm:"autoCreateTime;"`
 	Name      string     `json:"name"`
 	Desc      string     `json:"desc"`
 	Slug      string     `json:"slug"`
 }
 
-func (ProductCategoryCreate) TableName() string {
-	return ProductCategory{}.TableName()
+func (ProductCreate) TableName() string {
+	return Product{}.TableName()
 }
 
-func (data *ProductCategoryCreate) ValidateCreate() error {
+func (data *ProductCreate) ValidateCreate() error {
 	data.Name = strings.TrimSpace(data.Name)
 
 	if len(data.Name) == 0 {
-		return errors.New("product category name can not be blank")
+		return errors.New("product name can not be blank")
 	}
 
 	return nil

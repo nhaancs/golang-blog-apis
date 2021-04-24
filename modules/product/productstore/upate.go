@@ -1,15 +1,15 @@
-package productcategorystore
+package productstore
 
 import (
 	"context"
 	"nhaancs/common"
-	"nhaancs/modules/productcategory/productcategorymodel"
+	"nhaancs/modules/product/productmodel"
 )
 
 func (s *sqlStore) UpdateData(
 	ctx context.Context,
 	id int,
-	data *productcategorymodel.ProductCategoryUpdate,
+	data *productmodel.ProductUpdate,
 ) error {
 	db := s.db
 	if err := db.Where("id = ?", id).Updates(data).Error; err != nil {

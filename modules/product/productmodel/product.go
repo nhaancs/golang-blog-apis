@@ -1,18 +1,18 @@
-package productcategorymodel
+package productmodel
 
 import (
 	"nhaancs/common"
 )
 
-const EntityName = "ProductCategory"
+const EntityName = "Product"
 
-type ProductCategory struct {
+type Product struct {
 	common.SQLModel `json:",inline"`
 	Name            string `json:"name"`
 	Slug            string `json:"slug"`
 	Desc            string `json:"desc"`
 }
 
-func (ProductCategory) TableName() string {
+func (Product) TableName() string {
 	return "product_categories"
 }

@@ -20,8 +20,6 @@ Thiet ke db cho khuyen mai free ship trong tphcm
 - Order
 - Policy
 
-- Favorite
-- Product category
 - File
 - Collection (product collections, CTA) 
 - Banner (text, link to a post, collection, product)

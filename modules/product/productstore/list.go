@@ -1,26 +1,26 @@
-package productcategorystore
+package productstore
 
 import (
 	"context"
 	"nhaancs/common"
-	"nhaancs/modules/productcategory/productcategorymodel"
+	"nhaancs/modules/product/productmodel"
 )
 
 func (s *sqlStore) ListDataByCondition(
 	ctx context.Context,
 	conditions map[string]interface{},
-	filter *productcategorymodel.Filter,
+	filter *productmodel.Filter,
 	paging *common.Paging,
 	moreKeys ...string,
-) ([]productcategorymodel.ProductCategory, error) {
-	var result []productcategorymodel.ProductCategory
+) ([]productmodel.Product, error) {
+	var result []productmodel.Product
 	db := s.db
 
 	for i := range moreKeys {
 		db = db.Preload(moreKeys[i])
 	}
 
-	db = db.Table(productcategorymodel.ProductCategory{}.TableName()).
+	db = db.Table(productmodel.Product{}.TableName()).
 		Where(conditions).
 		Where("deleted_at is null")
 
