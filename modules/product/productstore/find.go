@@ -2,10 +2,10 @@ package productstore
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
 	"nhaancs/common"
 	"nhaancs/modules/product/productmodel"
-
-	"gorm.io/gorm"
 )
 
 func (s *sqlStore) FindDataByCondition(
@@ -16,13 +16,19 @@ func (s *sqlStore) FindDataByCondition(
 	var result productmodel.Product
 	db := s.db
 
-	for i := range moreKeys {
-		// todo: can have error here .Error
-		db = db.Preload(moreKeys[i])
+	// todo: implement below code for sqlx
+	// for i := range moreKeys {
+	// 	// todo: can have error here .Error
+	// 	db = db.Preload(moreKeys[i])
+	// }
+
+	for key, value := range conditions {
+		
 	}
 
-	if err := db.Where(conditions).First(&result).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
+	query := fmt.Sprintf("SELECT * FROM %s", productmodel.TableName)
+	if err := db.Get(&result, query); err != nil {
+		if err == sql.ErrNoRows {
 			return nil, common.ErrRecordNotFound
 		}
 		return nil, common.ErrDB(err)

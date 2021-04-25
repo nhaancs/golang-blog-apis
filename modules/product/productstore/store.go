@@ -1,14 +1,14 @@
 package productstore
 
 import (
-	"gorm.io/gorm"
+	"github.com/jmoiron/sqlx"
 )
 
 type sqlStore struct {
-	db *gorm.DB
+	db *sqlx.DB
 }
 
-func NewSQLStore(db *gorm.DB) *sqlStore {
+func NewSQLStore(db *sqlx.DB) *sqlStore {
 	return &sqlStore{db: db}
 }
 

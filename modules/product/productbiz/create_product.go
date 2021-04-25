@@ -29,22 +29,24 @@ func NewCreateProductBiz(store CreateProductStore) *createProductBiz {
 func (biz *createProductBiz) CreateProduct(
 	ctx context.Context, 
 	data *productmodel.ProductCreate,
-) error {
-	if err := data.ValidateCreate(); err != nil {
-		return common.ErrInvalidRequest(err)
+) (*productmodel.Product, error) {
+	if err := data.Validate(); err != nil {
+		return nil, common.ErrInvalidRequest(err)
 	}
+
+	// todo: get unitName by unitKey
 
 	data.Slug = slugify.Slugify(data.Name)
 	{
 		_, err := biz.store.FindDataByCondition(ctx, map[string]interface{}{"slug": data.Slug});
 		if err != common.ErrRecordNotFound {
-			return common.ErrEntityExisted(productmodel.EntityName, nil)
+			return nil, common.ErrEntityExisted(productmodel.EntityName, nil)
 		}
 	}
 
 	if err := biz.store.Create(ctx, data); err != nil {
-		return  common.ErrCannotCreateEntity(productmodel.EntityName, err)
+		return  nil, common.ErrCannotCreateEntity(productmodel.EntityName, err)
 	}
 
-	return nil
+	return &productmodel.Product{}, nil
 }

@@ -6,11 +6,12 @@ CREATE TABLE `products` (
   `is_enabled` boolean DEFAULT true,
   `name` varchar(200) NOT NULL,
   `slug` varchar(255) UNIQUE NOT NULL,
-  `short_description` varchar(255) NOT NULL,
-  `long_description` text,
+  `short_desc` varchar(255) NOT NULL,
+  `long_desc` text,
   `images` json NOT NULL,
-  `unit` varchar(20) NOT NULL,
-  `price` decimal(13,2) NOT NULL,
+  `unit_key` varchar(50) NOT NULL,
+  `unit_name` varchar(255) NOT NULL,
+  `price` decimal(13,2) DEFAULT 0,
   `quantity` decimal(13,2) DEFAULT 0,
   `is_unlimited` boolean DEFAULT false
 );

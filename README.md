@@ -1,25 +1,12 @@
 # ecommerce
-
 todo:
-- request, response like nestjs app
-- product category => product
-- migration
-- move to sqlx
+- implement https://github.com/Masterminds/squirrel
 ## Questions
 Thiet ke db cho khuyen mai free ship trong tphcm
 
-## Entities
-- Product (featured, recommanded for user)
-- User
-- Setting (Logo, SEO, lat, long)
-- Slide (Unique value proposition)
-- Blog category (name desc)
-- Blog post
-- Contact
-- Payment
-- Order
-- Policy
-
-- File
-- Collection (product collections, CTA) 
-- Banner (text, link to a post, collection, product)
+## Changes
+- unit management
+- db_column_name
+- createdDate => createdAt, updatedDate => updatedAt, deletedDate => deletedAt
+- success & error responses
+- shortDescription => shortDesc, longDescription => longDesc, description => desc

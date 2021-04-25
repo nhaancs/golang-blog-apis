@@ -18,13 +18,13 @@ import (
 
 func main() {
 	if err := godotenv.Load(".env"); err != nil {
-	  log.Fatalln("Error loading .env file: ", err)
+		log.Fatalln("Error loading .env file: ", err)
 	}
 
-	db, err := sqlx.Connect("mysql", os.Getenv("DB_URL"))
-    if err != nil {
-        log.Fatalln("Error connecting database: ", err)
-    }
+	db, err := sqlx.Connect("mysql", os.Getenv("DSN"))
+	if err != nil {
+		log.Fatalln("Error connecting database: ", err)
+	}
 
 	if err := doMigrations(db); err != nil {
 		log.Fatalln("Error doing migrations: ", err)
@@ -41,11 +41,11 @@ func doMigrations(db *sqlx.DB) error {
 		return err
 	}
 
-    m, err := migrate.NewWithDatabaseInstance("file://./migration", "mysql", driver)
-    if err != nil {
+	m, err := migrate.NewWithDatabaseInstance("file://./migration", "mysql", driver)
+	if err != nil {
 		return err
 	}
-    err = m.Steps(1)
+	err = m.Steps(1)
 	if err != nil {
 		return err
 	}
