@@ -1,26 +1,15 @@
 package common
 
-type listResponse struct {
-	ListData interface{} `json:"listData"`
-	Paging   interface{} `json:"paging,omitempty"`
-	Filter   interface{} `json:"filter,omitempty"`
-}
-type detailResponse struct {
-	DetailData interface{} `json:"detailData"`
-}
-type actionResponse struct {
-	Data    interface{} `json:"data"`
-	Message string      `json:"message"`
+type successRes struct {
+	Data   interface{} `json:"data"`
+	Paging interface{} `json:"paging,omitempty"`
+	Filter interface{} `json:"filter,omitempty"`
 }
 
-func NewListResponse(listData, paging, filter interface{}) *listResponse {
-	return &listResponse{ListData: listData, Paging: paging, Filter: filter}
+func NewSuccessResponse(data, paging, filter interface{}) *successRes {
+	return &successRes{Data: data, Paging: paging, Filter: filter}
 }
 
-func NewDetailResponse(detailData interface{}) *detailResponse {
-	return &detailResponse{DetailData: detailData}
-}
-
-func NewActionResponse(message string, data interface{}) *actionResponse {
-	return &actionResponse{Message: message, Data: data}
+func SimpleSuccessResponse(data interface{}) *successRes {
+	return NewSuccessResponse(data, nil, nil)
 }

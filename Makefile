@@ -1,7 +1,5 @@
 include .env
 
-all: start
-
 rundb:
 	@docker run -d --name mysql --privileged=true -p 3306:3306 \
 	-e MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD} \
@@ -9,12 +7,14 @@ rundb:
 	-e MYSQL_PASSWORD=${DB_PASSWORD} \
 	-e MYSQL_DATABASE=${DB_NAME} \
 	bitnami/mysql:8.0
+buildmigrator:
+	@docker build -t migrator ./migrator
+
 startdb:
 	@docker start mysql
-stopdb:
-	@docker stop mysql
+migrateup:
+	@docker run --network host migrator -path="/migrations/" -database "mysql://${DSN}" up
 start:
 	@go run .
 
-
-.PHONY: rundb startdb stopdb start
+.PHONY: rundb startdb migrateup buildmigrator start
