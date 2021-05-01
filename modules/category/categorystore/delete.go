@@ -4,6 +4,7 @@ import (
 	"context"
 	"nhaancs/common"
 	"nhaancs/modules/category/categorymodel"
+	"time"
 )
 
 func (s *sqlStore) SoftDelete(
@@ -11,11 +12,10 @@ func (s *sqlStore) SoftDelete(
 	id int,
 ) error {
 	db := s.db
-
-	if err := db.Table(categorymodel.Category{}.TableName()).
-		Where("id = ?", id).Updates(map[string]interface{}{
-		"status": 0,
-	}).Error; err != nil {
+	err := db.Table(categorymodel.Category{}.TableName()).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{"deleted_at": time.Now()}).Error
+	if err != nil {
 		return common.ErrDB(err)
 	}
 

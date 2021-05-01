@@ -14,7 +14,6 @@ import (
 func Create(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data categorymodel.CategoryCreate
-
 		if err := c.ShouldBind(&data); err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}

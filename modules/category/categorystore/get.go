@@ -14,9 +14,8 @@ func (s *sqlStore) Get(
 	moreKeys ...string,
 ) (*categorymodel.Category, error) {
 	var result categorymodel.Category
-
 	db := s.db
-
+	
 	for i := range moreKeys {
 		db = db.Preload(moreKeys[i])
 	}

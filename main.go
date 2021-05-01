@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/golang-migrate/migrate/source/file"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
