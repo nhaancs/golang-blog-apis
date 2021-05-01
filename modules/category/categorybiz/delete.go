@@ -31,8 +31,7 @@ func (biz *deleteBiz) Delete(ctx context.Context, id int) error {
 	if err != nil {
 		return common.ErrCannotGetEntity(categorymodel.EntityName, err)
 	}
-
-	if oldData.Status == 0 {
+	if oldData.DeletedAt != nil {
 		return common.ErrEntityDeleted(categorymodel.EntityName, nil)
 	}
 
