@@ -3,10 +3,10 @@ package categorystore
 import (
 	"context"
 	"nhaancs/common"
-	"nhaancs/modules/restaurant/categorymodel"
+	"nhaancs/modules/category/categorymodel"
 )
 
-func (s *sqlStore) ListDataByCondition(ctx context.Context,
+func (s *sqlStore) List(ctx context.Context,
 	conditions map[string]interface{},
 	filter *categorymodel.Filter,
 	paging *common.Paging,
@@ -22,11 +22,11 @@ func (s *sqlStore) ListDataByCondition(ctx context.Context,
 
 	db = db.Table(categorymodel.Category{}.TableName()).Where(conditions).Where("status in (1)")
 
-	if v := filter; v != nil {
-		if v.CityId > 0 {
-			db = db.Where("city_id = ?", v.CityId)
-		}
-	}
+	// if v := filter; v != nil {
+	// 	if v.CityId > 0 {
+	// 		db = db.Where("city_id = ?", v.CityId)
+	// 	}
+	// }
 
 	if err := db.Count(&paging.Total).Error; err != nil {
 		return nil, common.ErrDB(err)

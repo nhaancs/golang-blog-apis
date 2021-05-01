@@ -3,11 +3,11 @@ package categorybiz
 import (
 	"context"
 	"nhaancs/common"
-	"nhaancs/modules/restaurant/categorymodel"
+	"nhaancs/modules/category/categorymodel"
 )
 
-type UpdateRestaurantStore interface {
-	FindDataByCondition(
+type UpdateStore interface {
+	Get(
 		ctx context.Context,
 		conditions map[string]interface{},
 		moreKeys ...string,
@@ -19,17 +19,16 @@ type UpdateRestaurantStore interface {
 	) error
 }
 
-type updateRestaurantBiz struct {
-	store UpdateRestaurantStore
+type updateBiz struct {
+	store UpdateStore
 }
 
-func NewUpdateRestaurantBiz(store UpdateRestaurantStore) *updateRestaurantBiz {
-	return &updateRestaurantBiz{store: store}
+func NewUpdateBiz(store UpdateStore) *updateBiz {
+	return &updateBiz{store: store}
 }
 
-func (biz *updateRestaurantBiz) UpdateRestaurant(ctx context.Context, id int, data *categorymodel.CategoryUpdate) error {
-	oldData, err := biz.store.FindDataByCondition(ctx, map[string]interface{}{"id": id})
-
+func (biz *updateBiz) Update(ctx context.Context, id int, data *categorymodel.CategoryUpdate) error {
+	oldData, err := biz.store.Get(ctx, map[string]interface{}{"id": id})
 	if err != nil {
 		return common.ErrCannotGetEntity(categorymodel.EntityName, err)
 	}

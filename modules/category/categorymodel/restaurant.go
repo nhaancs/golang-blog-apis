@@ -55,9 +55,9 @@ func (res *CategoryCreate) Validate() error {
 }
 
 var (
-	ErrNameCannotBeEmpty = common.NewCustomError(nil, "restaurant name can't be blank", "ErrNameCannotBeEmpty")
+	ErrNameCannotBeEmpty = common.NewCustomError(nil, "category name can't be blank", "ErrNameCannotBeEmpty")
 )
 
 func (data *Category) Mask(isAdminOrOwner bool) {
-	data.GenUID(common.DbTypeRestaurant)
+	data.GenUID(common.DbTypeCategory)
 }

@@ -3,7 +3,7 @@ package categorystore
 import (
 	"context"
 	"nhaancs/common"
-	"nhaancs/modules/restaurant/categorymodel"
+	"nhaancs/modules/category/categorymodel"
 )
 
 func (s *sqlStore) UpdateData(

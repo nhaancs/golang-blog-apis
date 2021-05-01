@@ -3,10 +3,10 @@ package categorystore
 import (
 	"context"
 	"nhaancs/common"
-	"nhaancs/modules/restaurant/categorymodel"
+	"nhaancs/modules/category/categorymodel"
 )
 
-func (s *sqlStore) SoftDeleteData(
+func (s *sqlStore) SoftDelete(
 	ctx context.Context,
 	id int,
 ) error {

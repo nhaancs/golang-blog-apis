@@ -1,35 +1,33 @@
-package ginrestaurant
+package gincategory
 
 import (
 	"net/http"
 	"nhaancs/common"
 	"nhaancs/component"
-	"nhaancs/modules/restaurant/categorybiz"
-	"nhaancs/modules/restaurant/categorymodel"
-	"nhaancs/modules/restaurant/categorystore"
+	"nhaancs/modules/category/categorybiz"
+	"nhaancs/modules/category/categorymodel"
+	"nhaancs/modules/category/categorystore"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateRestaurant(appCtx component.AppContext) gin.HandlerFunc {
+func Update(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		uid, err := common.FromBase58(c.Param("id"))
-		//id, err := strconv.Atoi(c.Param("id"))
-
+		// uid, err := common.FromBase58(c.Param("id"))
+		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
 
 		var data categorymodel.CategoryUpdate
-
 		if err := c.ShouldBind(&data); err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
 
 		store := categorystore.NewSQLStore(appCtx.GetMainDBConnection())
-		biz := categorybiz.NewUpdateRestaurantBiz(store)
-
-		if err := biz.UpdateRestaurant(c.Request.Context(), int(uid.GetLocalID()), &data); err != nil {
+		biz := categorybiz.NewUpdateBiz(store)
+		if err := biz.Update(c.Request.Context(), id, &data); err != nil {
 			panic(err)
 		}
 

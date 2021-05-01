@@ -3,12 +3,12 @@ package categorystore
 import (
 	"context"
 	"nhaancs/common"
-	"nhaancs/modules/restaurant/categorymodel"
+	"nhaancs/modules/category/categorymodel"
 
 	"gorm.io/gorm"
 )
 
-func (s *sqlStore) FindDataByCondition(
+func (s *sqlStore) Get(
 	ctx context.Context,
 	conditions map[string]interface{},
 	moreKeys ...string,
@@ -24,7 +24,7 @@ func (s *sqlStore) FindDataByCondition(
 	if err := db.Where(conditions).
 		First(&result).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, common.RecordNotFound
+			return nil, common.ErrRecordNotFound
 		}
 		return nil, common.ErrDB(err)
 	}
