@@ -17,15 +17,14 @@ func (Category) TableName() string {
 	return "categories"
 }
 
-
 func (data *Category) Mask(isAdminOrOwner bool) {
 	data.GenUID(common.DbTypeCategory)
 }
 
 var (
-	ErrNameCannotBeEmpty = common.NewCustomError(nil, "category name can't be blank", "ErrNameCannotBeEmpty")
-	ErrNameIsTooLong = common.NewCustomError(nil, "category name is too long", "ErrNameIsTooLong")
-	ErrSlugCannotBeEmpty = common.NewCustomError(nil, "slug can't be blank", "ErrNameCannotBeEmpty")
-	ErrSlugIsTooLong = common.NewCustomError(nil, "slug is too long", "ErrNameIsTooLong")
-	ErrSlugIsInvalid = common.NewCustomError(nil, "slug is invalid", "ErrSlugIsInvalid")
+	ErrCategoryNameCannotBeEmpty = common.NewCustomError(nil, "category name can't be blank", "ErrCategoryNameCannotBeEmpty")
+	ErrCategoryNameIsTooLong     = common.NewCustomError(nil, "category name is too long", "ErrCategoryNameIsTooLong")
+	ErrCategorySlugCannotBeEmpty = common.NewCustomError(nil, "slug can't be blank", "ErrCategoryNameCannotBeEmpty")
+	ErrCategorySlugIsTooLong     = common.NewCustomError(nil, "slug is too long", "ErrCategoryNameIsTooLong")
+	ErrCategorySlugIsInvalid     = common.NewCustomError(nil, "slug is invalid", "ErrCategorySlugIsInvalid")
 )

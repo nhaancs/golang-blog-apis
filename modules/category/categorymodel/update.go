@@ -23,20 +23,20 @@ func (res *CategoryUpdate) Validate() error {
 	res.Slug = strings.TrimSpace(res.Slug)
 
 	if len(res.Name) == 0 {
-		return ErrNameCannotBeEmpty
+		return ErrCategoryNameCannotBeEmpty
 	}
 	if len(res.Name) > 200 {
-		return ErrNameIsTooLong
+		return ErrCategoryNameIsTooLong
 	}
 	if len(res.Slug) == 0 {
-		return ErrSlugCannotBeEmpty
+		return ErrCategorySlugCannotBeEmpty
 	}
 	if len(res.Slug) > 200 {
-		return ErrSlugIsTooLong
+		return ErrCategorySlugIsTooLong
 	}
 	if !slug.IsSlug(res.Slug) {
-		return ErrSlugIsInvalid
+		return ErrCategorySlugIsInvalid
 	}
-	
+
 	return nil
 }

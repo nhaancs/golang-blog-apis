@@ -5,6 +5,7 @@ import (
 	"nhaancs/component"
 	"nhaancs/middleware"
 	"nhaancs/modules/category/categorytransport/gincategory"
+	"nhaancs/modules/post/posttransport/ginpost"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -41,6 +42,14 @@ func runService(db *gorm.DB) error {
 		categories.GET("", gincategory.List(appCtx))
 		categories.PATCH("/:id", gincategory.Update(appCtx))
 		categories.DELETE("/:id", gincategory.Delete(appCtx))
+	}
+	posts := v1.Group("/posts")
+	{
+		posts.POST("", ginpost.Create(appCtx))
+		posts.GET("/:id", ginpost.Get(appCtx))
+		posts.GET("", ginpost.List(appCtx))
+		posts.PATCH("/:id", ginpost.Update(appCtx))
+		posts.DELETE("/:id", ginpost.Delete(appCtx))
 	}
 
 	return r.Run()

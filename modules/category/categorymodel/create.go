@@ -3,14 +3,15 @@ package categorymodel
 import (
 	"nhaancs/common"
 	"strings"
+
 	"github.com/gosimple/slug"
 )
 
 type CategoryCreate struct {
 	common.SQLCreateModel `json:",inline"`
-	Name            string `json:"name" gorm:"column:name;"`
-	Slug            string `json:"slug" gorm:"column:slug;"`
-	Desc            string `json:"desc" gorm:"column:desc;"`
+	Name                  string `json:"name" gorm:"column:name;"`
+	Slug                  string `json:"slug" gorm:"column:slug;"`
+	Desc                  string `json:"desc" gorm:"column:desc;"`
 }
 
 func (CategoryCreate) TableName() string {
@@ -22,19 +23,19 @@ func (res *CategoryCreate) Validate() error {
 	res.Slug = strings.TrimSpace(res.Slug)
 
 	if len(res.Name) == 0 {
-		return ErrNameCannotBeEmpty
+		return ErrCategoryNameCannotBeEmpty
 	}
 	if len(res.Name) > 200 {
-		return ErrNameIsTooLong
+		return ErrCategoryNameIsTooLong
 	}
 	if len(res.Slug) == 0 {
-		return ErrSlugCannotBeEmpty
+		return ErrCategorySlugCannotBeEmpty
 	}
-	if len(res.Slug) > 200 {
-		return ErrSlugIsTooLong
+	if len(res.Slug) > 255 {
+		return ErrCategorySlugIsTooLong
 	}
 	if !slug.IsSlug(res.Slug) {
-		return ErrSlugIsInvalid
+		return ErrCategorySlugIsInvalid
 	}
 
 	return nil
