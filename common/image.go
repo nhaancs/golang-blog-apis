@@ -8,40 +8,41 @@ import (
 )
 
 type Image struct {
-	Id        int    `json:"id"`
 	Url       string `json:"url"`
-	Width     int    `json:"width"`
-	Height    int    `json:"height"`
+	Width     int    `json:"width,omitempty"`
+	Height    int    `json:"height,omitempty"`
 	CloudName string `json:"cloud_name,omitempty"`
 	Extension string `json:"extension,omitempty"`
 }
 
-func (j *Image) Scan(value interface{}) error {
+func (Image) TableName() string { return "images" }
+
+func (img *Image) Scan(value interface{}) error {
 	bytes, ok := value.([]byte)
 	if !ok {
 		return errors.New(fmt.Sprint("Failed to unmarshal JSONB value:", value))
 	}
 
-	var img Image
-	if err := json.Unmarshal(bytes, &img); err != nil {
+	var res Image
+	if err := json.Unmarshal(bytes, &res); err != nil {
 		return err
 	}
 
-	*j = img
+	*img = res
 	return nil
 }
 
 // Value return json value, implement driver.Valuer interface
-func (j *Image) Value() (driver.Value, error) {
-	if j == nil {
+func (img *Image) Value() (driver.Value, error) {
+	if img == nil {
 		return nil, nil
 	}
-	return json.Marshal(j)
+	return json.Marshal(img)
 }
 
 type Images []Image
 
-func (j *Images) Scan(value interface{}) error {
+func (imgs *Images) Scan(value interface{}) error {
 	bytes, ok := value.([]byte)
 	if !ok {
 		return errors.New(fmt.Sprint("Failed to unmarshal JSONB value:", value))
@@ -52,14 +53,14 @@ func (j *Images) Scan(value interface{}) error {
 		return err
 	}
 
-	*j = img
+	*imgs = img
 	return nil
 }
 
 // Value return json value, implement driver.Valuer interface
-func (j *Images) Value() (driver.Value, error) {
-	if j == nil {
+func (imgs *Images) Value() (driver.Value, error) {
+	if imgs == nil {
 		return nil, nil
 	}
-	return json.Marshal(j)
+	return json.Marshal(imgs)
 }

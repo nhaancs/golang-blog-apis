@@ -3,9 +3,11 @@ package main
 import (
 	"log"
 	"nhaancs/component"
+	"nhaancs/component/uploadprovider"
 	"nhaancs/middleware"
 	"nhaancs/modules/category/categorytransport/gincategory"
 	"nhaancs/modules/post/posttransport/ginpost"
+	"nhaancs/modules/upload/uploadtransport/ginupload"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -24,17 +26,27 @@ func main() {
 		log.Fatalln("Error connecting database: ", err)
 	}
 
-	if err := runService(db); err != nil {
+	s3Provider := uploadprovider.NewS3Provider(
+		os.Getenv("S3_BUCKET_NAME"), 
+		os.Getenv("S3_REGION"), 
+		os.Getenv("S3_API_KEY"), 
+		os.Getenv("S3_SECRET_KEY"), 
+		os.Getenv("S3_DOMAIN"),
+	)
+
+	if err := runService(db, s3Provider); err != nil {
 		log.Fatalln("Error running service: ", err)
 	}
 }
 
-func runService(db *gorm.DB) error {
-	appCtx := component.NewAppContext(db)
+func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider) error {
+	appCtx := component.NewAppContext(db, upProvider)
 	r := gin.Default()
 	r.Use(middleware.Recover(appCtx))
 
 	v1 := r.Group("v1")
+	v1.POST("/upload", ginupload.Upload(appCtx))
+
 	categories := v1.Group("/categories")
 	{
 		categories.POST("", gincategory.Create(appCtx))
