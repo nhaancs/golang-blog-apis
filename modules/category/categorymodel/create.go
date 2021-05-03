@@ -40,3 +40,7 @@ func (res *CategoryCreate) Validate() error {
 
 	return nil
 }
+
+func (data *CategoryCreate) Mask(isAdmin bool) {
+	data.GenUID(common.DbTypeCategory)
+}

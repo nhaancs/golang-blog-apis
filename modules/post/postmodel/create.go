@@ -75,3 +75,7 @@ func (res *PostCreate) Validate() error {
 
 	return nil
 }
+
+func (data *PostCreate) Mask(isAdmin bool) {
+	data.GenUID(common.DbTypePost)
+}
