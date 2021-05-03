@@ -5,6 +5,7 @@ const (
 	DbTypeUser     = 2
 	DbTypePost     = 3
 	DbTypeComment  = 4
+	DbTypeImage    = 5
 )
 
 const CurrentUser = "user"

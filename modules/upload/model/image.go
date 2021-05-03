@@ -4,21 +4,16 @@ import (
 	"nhaancs/common"
 )
 
-const EntityName = "Upload"
+const EntityName = "Image"
 
-type Upload struct {
-	common.SQLCreateModel `json:",inline"`
-	common.Image          `json:",inline"`
+type Image struct {
+	common.SQLModel `json:",inline"`
+	ImageInfo       *common.Image `json:",inline" gorm:"column:image_info;"`
 }
 
-func (Upload) TableName() string {
-	return "uploads"
+func (Image) TableName() string {
+	return "images"
 }
-
-//
-//func (u *Upload) Mask(isAdmin bool) {
-//	u.GenUID(common.DBTypeUpload, 1)
-//}
 
 var (
 	ErrFileTooLarge = common.NewCustomError(nil, "file too large", "ErrFileTooLarge")

@@ -6,13 +6,14 @@ import (
 	"nhaancs/common"
 	"nhaancs/component"
 	"nhaancs/modules/upload/biz"
+	"nhaancs/modules/upload/store"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Upload(appCtx component.AppContext) func(*gin.Context) {
+func UploadImage(appCtx component.AppContext) func(*gin.Context) {
 	return func(c *gin.Context) {
-		//db := appCtx.GetMainDBConnection()
+		db := appCtx.GetMainDBConnection()
 		fileHeader, err := c.FormFile("file")
 		if err != nil {
 			panic(common.ErrInvalidRequest(err))
@@ -30,9 +31,9 @@ func Upload(appCtx component.AppContext) func(*gin.Context) {
 			panic(common.ErrInvalidRequest(err))
 		}
 
-		//imgStore := uploadstore.NewSQLStore(db)
-		biz := uploadbiz.NewUploadBiz(appCtx.UploadProvider(), nil)
-		img, err := biz.Upload(c.Request.Context(), dataBytes, folder, fileHeader.Filename)
+		imgStore := uploadstore.NewSQLStore(db)
+		biz := uploadbiz.NewUploadImageBiz(appCtx.UploadProvider(), imgStore)
+		img, err := biz.UploadImage(c.Request.Context(), dataBytes, folder, fileHeader.Filename)
 		if err != nil {
 			panic(err)
 		}

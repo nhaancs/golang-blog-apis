@@ -67,11 +67,7 @@ CREATE TABLE `images` (
   `updated_at` datetime,
   `deleted_at` datetime,
   `is_enabled` boolean DEFAULT true,
-  `url` string NOT NULL,
-  `width` string,
-  `height` string,
-  `clound_name` string,
-  `extension` string
+  `image_info` json NOT NULL
 );
 
 ALTER TABLE `posts` ADD FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`);

@@ -8,14 +8,12 @@ import (
 )
 
 type Image struct {
-	Url       string `json:"url"`
-	Width     int    `json:"width,omitempty"`
-	Height    int    `json:"height,omitempty"`
-	CloudName string `json:"cloud_name,omitempty"`
-	Extension string `json:"extension,omitempty"`
+	Url       string `json:"url" gorm:"column:url;"`
+	Width     int    `json:"width,omitempty" gorm:"column:width;"`
+	Height    int    `json:"height,omitempty" gorm:"column:height;"`
+	CloudName string `json:"cloud_name,omitempty" gorm:"column:cloud_name;"`
+	Extension string `json:"extension,omitempty" gorm:"column:extension;"`
 }
-
-func (Image) TableName() string { return "images" }
 
 func (img *Image) Scan(value interface{}) error {
 	bytes, ok := value.([]byte)

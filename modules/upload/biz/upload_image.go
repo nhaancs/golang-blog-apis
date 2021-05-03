@@ -16,19 +16,19 @@ import (
 )
 
 type ImageStore interface {
-	Create(context context.Context, data *common.Image) error
+	CreateImage(context context.Context, data *uploadmodel.UploadedImage) error
 }
 
-type uploadBiz struct {
+type uploadImageBiz struct {
 	provider uploadprovider.UploadProvider
 	imgStore ImageStore
 }
 
-func NewUploadBiz(provider uploadprovider.UploadProvider, imgStore ImageStore) *uploadBiz {
-	return &uploadBiz{provider: provider, imgStore: imgStore}
+func NewUploadImageBiz(provider uploadprovider.UploadProvider, imgStore ImageStore) *uploadImageBiz {
+	return &uploadImageBiz{provider: provider, imgStore: imgStore}
 }
 
-func (biz *uploadBiz) Upload(ctx context.Context, data []byte, folder, fileName string) (*common.Image, error) {
+func (biz *uploadImageBiz) UploadImage(ctx context.Context, data []byte, folder, fileName string) (*common.Image, error) {
 	fileBytes := bytes.NewBuffer(data)
 	w, h, err := getImageDimension(fileBytes)
 	if err != nil {
@@ -38,11 +38,10 @@ func (biz *uploadBiz) Upload(ctx context.Context, data []byte, folder, fileName 
 	if strings.TrimSpace(folder) == "" {
 		folder = "img"
 	}
-
 	fileExt := filepath.Ext(fileName)                                // "img.jpg" => ".jpg"
 	fileName = fmt.Sprintf("%d%s", time.Now().Nanosecond(), fileExt) // 9129324893248.jpg
-
-	img, err := biz.provider.SaveFile(ctx, data, fmt.Sprintf("%s/%s", folder, fileName))
+	dst := fmt.Sprintf("%s/%s", folder, fileName)
+	img, err := biz.provider.SaveFile(ctx, data, dst)
 	if err != nil {
 		return nil, uploadmodel.ErrCannotSaveFile(err)
 	}
@@ -50,12 +49,13 @@ func (biz *uploadBiz) Upload(ctx context.Context, data []byte, folder, fileName 
 	img.Width = w
 	img.Height = h
 	img.Extension = fileExt
-	//img.CloudName = "s3" // should be set in provider
-
-	//if err := biz.imgStore.Create(ctx, img); err != nil {
-	//	// delete img on S3
-	//	return nil, uploadmodel.ErrCannotSaveFile(err)
-	//}
+	
+	uploadedImage := &uploadmodel.UploadedImage{}
+	uploadedImage.ImageInfo = img
+	if err := biz.imgStore.CreateImage(ctx, uploadedImage); err != nil {
+		biz.provider.DeleteFile(ctx, dst)
+		return nil, uploadmodel.ErrCannotSaveFile(err)
+	}
 
 	return img, nil
 }

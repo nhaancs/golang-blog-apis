@@ -71,3 +71,13 @@ func (provider *s3Provider) SaveFile(ctx context.Context, data []byte, dst strin
 
 	return img, nil
 }
+
+func (provider *s3Provider) DeleteFile(ctx context.Context, dst string) error {
+	input := &s3.DeleteObjectInput{
+		Bucket: &provider.bucketName,
+		Key:    &dst,
+	}
+	_, err := s3.New(provider.session).DeleteObject(input)
+
+	return err
+}

@@ -45,7 +45,7 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider) error {
 	r.Use(middleware.Recover(appCtx))
 
 	v1 := r.Group("v1")
-	v1.POST("/upload", ginupload.Upload(appCtx))
+	v1.POST("/upload-image", ginupload.UploadImage(appCtx))
 
 	categories := v1.Group("/categories")
 	{
