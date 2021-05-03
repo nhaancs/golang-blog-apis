@@ -9,7 +9,6 @@ rundb:
 	bitnami/mysql:8.0
 buildmigrator:
 	@docker build -t migrator ./migrator
-
 startdb:
 	@docker start mysql
 migrateup:
