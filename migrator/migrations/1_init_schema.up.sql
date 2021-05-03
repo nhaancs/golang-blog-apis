@@ -61,6 +61,19 @@ CREATE TABLE `favorites` (
   PRIMARY KEY (`user_id`, `post_id`)
 );
 
+CREATE TABLE `images` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `created_at` datetime DEFAULT (now()),
+  `updated_at` datetime,
+  `deleted_at` datetime,
+  `is_enabled` boolean DEFAULT true,
+  `url` string NOT NULL,
+  `width` string,
+  `height` string,
+  `clound_name` string,
+  `extension` string
+);
+
 ALTER TABLE `posts` ADD FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`);
 
 ALTER TABLE `posts` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
@@ -75,42 +88,34 @@ ALTER TABLE `favorites` ADD FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`);
 
 CREATE INDEX `users_index_0` ON `users` (`deleted_at`);
 
-CREATE INDEX `users_index_1` ON `users` (`created_at`);
+CREATE INDEX `users_index_1` ON `users` (`is_enabled`);
 
-CREATE INDEX `users_index_2` ON `users` (`is_enabled`);
+CREATE INDEX `users_index_2` ON `users` (`role`);
 
-CREATE INDEX `users_index_3` ON `users` (`role`);
+CREATE INDEX `users_index_3` ON `users` (`email`);
 
-CREATE INDEX `users_index_4` ON `users` (`email`);
+CREATE INDEX `categories_index_4` ON `categories` (`deleted_at`);
 
-CREATE INDEX `categories_index_5` ON `categories` (`deleted_at`);
+CREATE INDEX `categories_index_5` ON `categories` (`is_enabled`);
 
-CREATE INDEX `categories_index_6` ON `categories` (`created_at`);
+CREATE INDEX `categories_index_6` ON `categories` (`slug`);
 
-CREATE INDEX `categories_index_7` ON `categories` (`is_enabled`);
+CREATE INDEX `posts_index_7` ON `posts` (`deleted_at`);
 
-CREATE INDEX `categories_index_8` ON `categories` (`slug`);
+CREATE INDEX `posts_index_8` ON `posts` (`is_enabled`);
 
-CREATE INDEX `posts_index_9` ON `posts` (`deleted_at`);
+CREATE INDEX `posts_index_9` ON `posts` (`slug`);
 
-CREATE INDEX `posts_index_10` ON `posts` (`created_at`);
+CREATE INDEX `posts_index_10` ON `posts` (`title`);
 
-CREATE INDEX `posts_index_11` ON `posts` (`is_enabled`);
+CREATE INDEX `posts_index_11` ON `posts` (`category_id`);
 
-CREATE INDEX `posts_index_12` ON `posts` (`slug`);
+CREATE INDEX `comments_index_12` ON `comments` (`deleted_at`);
 
-CREATE INDEX `posts_index_13` ON `posts` (`title`);
+CREATE INDEX `comments_index_13` ON `comments` (`is_enabled`);
 
-CREATE INDEX `posts_index_14` ON `posts` (`category_id`);
+CREATE INDEX `comments_index_14` ON `comments` (`post_id`);
 
-CREATE INDEX `comments_index_15` ON `comments` (`deleted_at`);
+CREATE INDEX `favorites_index_15` ON `favorites` (`post_id`);
 
-CREATE INDEX `comments_index_16` ON `comments` (`created_at`);
-
-CREATE INDEX `comments_index_17` ON `comments` (`is_enabled`);
-
-CREATE INDEX `comments_index_18` ON `comments` (`post_id`);
-
-CREATE INDEX `favorites_index_19` ON `favorites` (`created_at`);
-
-CREATE INDEX `favorites_index_20` ON `favorites` (`post_id`);
+CREATE INDEX `images_index_16` ON `images` (`deleted_at`);
