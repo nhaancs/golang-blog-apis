@@ -5,9 +5,9 @@ import (
 	"nhaancs/component"
 	"nhaancs/component/uploadprovider"
 	"nhaancs/middleware"
-	"nhaancs/modules/category/categorytransport/gincategory"
-	"nhaancs/modules/post/posttransport/ginpost"
-	"nhaancs/modules/upload/uploadtransport/ginupload"
+	"nhaancs/modules/category/transport/gin"
+	"nhaancs/modules/post/transport/gin"
+	"nhaancs/modules/upload/transport/gin"
 	"os"
 
 	"github.com/gin-gonic/gin"
