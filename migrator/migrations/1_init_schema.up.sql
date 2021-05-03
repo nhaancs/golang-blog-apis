@@ -56,8 +56,6 @@ CREATE TABLE `comments` (
 
 CREATE TABLE `favorites` (
   `created_at` datetime DEFAULT (now()),
-  `updated_at` datetime,
-  `is_enabled` boolean DEFAULT true,
   `user_id` int NOT NULL,
   `post_id` int NOT NULL,
   PRIMARY KEY (`user_id`, `post_id`)
@@ -115,4 +113,4 @@ CREATE INDEX `comments_index_18` ON `comments` (`post_id`);
 
 CREATE INDEX `favorites_index_19` ON `favorites` (`created_at`);
 
-CREATE INDEX `favorites_index_20` ON `favorites` (`is_enabled`);
+CREATE INDEX `favorites_index_20` ON `favorites` (`post_id`);

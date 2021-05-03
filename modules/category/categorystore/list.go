@@ -33,27 +33,18 @@ func (s *sqlStore) List(ctx context.Context,
 		return nil, common.ErrDB(err)
 	}
 
-	// if v := paging.FakeCursor; v != "" {
-	// 	if uid, err := common.FromBase58(v); err == nil {
-	// 		db = db.Where("id < ?", uid.GetLocalID())
-	// 	}
-	// } else {
-	// 	db = db.Offset((paging.Page - 1) * paging.Limit)
-	// }
+	if v := paging.FakeCursor; v != "" {
+		if uid, err := common.FromBase58(v); err == nil {
+			db = db.Where("id < ?", uid.GetLocalID())
+		}
+	} else {
+		db = db.Offset((paging.Page - 1) * paging.Limit)
+	}
 
-	// if err := db.
-	// 	Limit(paging.Limit).
-	// 	Order("id desc").
-	// 	Find(&result).Error; err != nil {
-	// 	return nil, common.ErrDB(err)
-	// }
-
-	err := db.
-		Offset((paging.Page - 1) * paging.Limit).
+	if err := db.
 		Limit(paging.Limit).
 		Order("id desc").
-		Find(&result).Error
-	if err != nil {
+		Find(&result).Error; err != nil {
 		return nil, common.ErrDB(err)
 	}
 

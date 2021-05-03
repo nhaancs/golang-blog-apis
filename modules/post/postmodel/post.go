@@ -18,6 +18,7 @@ type Post struct {
 	Keywords        string        `json:"keywords" gorm:"column:keywords;"`
 	CategoryId      int           `json:"category_id" gorm:"column:category_id;"`
 	UserId          int           `json:"user_id" gorm:"column:user_id;"`
+	FavoriteCount   int           `json:"favorite_count" gorm:"-"`
 }
 
 func (Post) TableName() string {

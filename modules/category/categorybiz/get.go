@@ -36,5 +36,5 @@ func (biz *getBiz) Get(ctx context.Context, id int) (*categorymodel.Category, er
 		return nil, common.ErrEntityDeleted(categorymodel.EntityName, nil)
 	}
 
-	return data, err
+	return data, nil
 }

@@ -27,10 +27,10 @@ func main() {
 	}
 
 	s3Provider := uploadprovider.NewS3Provider(
-		os.Getenv("S3_BUCKET_NAME"), 
-		os.Getenv("S3_REGION"), 
-		os.Getenv("S3_API_KEY"), 
-		os.Getenv("S3_SECRET_KEY"), 
+		os.Getenv("S3_BUCKET_NAME"),
+		os.Getenv("S3_REGION"),
+		os.Getenv("S3_API_KEY"),
+		os.Getenv("S3_SECRET_KEY"),
 		os.Getenv("S3_DOMAIN"),
 	)
 
