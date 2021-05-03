@@ -6,28 +6,25 @@ import (
 	"nhaancs/component"
 	"nhaancs/modules/post/postbiz"
 	"nhaancs/modules/post/poststore"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Get(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// uid, err := common.FromBase58(c.Param("id"))
-		id, err := strconv.Atoi(c.Param("id"))
+		uid, err := common.FromBase58(c.Param("id"))
 		if err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
 
 		store := poststore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := postbiz.NewGetBiz(store)
-		// data, err := biz.Get(c.Request.Context(), int(uid.GetLocalID()))
-		data, err := biz.Get(c.Request.Context(), id)
+		data, err := biz.Get(c.Request.Context(), int(uid.GetLocalID()))
 		if err != nil {
 			panic(err)
 		}
 
-		// data.Mask(false)
+		data.Mask(false)
 		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data))
 	}
 }

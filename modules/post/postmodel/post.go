@@ -24,7 +24,7 @@ func (Post) TableName() string {
 	return "posts"
 }
 
-func (data *Post) Mask(isAdminOrOwner bool) {
+func (data *Post) Mask(isAdmin bool) {
 	data.GenUID(common.DbTypePost)
 }
 

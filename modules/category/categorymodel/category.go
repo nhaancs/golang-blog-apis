@@ -17,7 +17,7 @@ func (Category) TableName() string {
 	return "categories"
 }
 
-func (data *Category) Mask(isAdminOrOwner bool) {
+func (data *Category) Mask(isAdmin bool) {
 	data.GenUID(common.DbTypeCategory)
 }
 

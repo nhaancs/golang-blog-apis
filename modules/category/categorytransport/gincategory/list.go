@@ -31,13 +31,14 @@ func List(appCtx component.AppContext) gin.HandlerFunc {
 			panic(err)
 		}
 
-		// for i := range result {
-		// 	result[i].Mask(false)
+		for i := range result {
+			// todo: what if user and admin use the same list api
+			result[i].Mask(false)
 
-		// 	if i == len(result)-1 {
-		// 		paging.NextCursor = result[i].FakeId.String()
-		// 	}
-		// }
+			// if i == len(result)-1 {
+			// 	paging.NextCursor = result[i].FakeId.String()
+			// }
+		}
 
 		c.JSON(http.StatusOK, common.NewSuccessResponse(result, paging, filter))
 	}

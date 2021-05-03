@@ -27,9 +27,8 @@ func Create(appCtx component.AppContext) gin.HandlerFunc {
 			panic(err)
 		}
 
-		// data.GenUID(common.DbTypePost)
+		data.GenUID(common.DbTypePost)
 
-		// c.JSON(http.StatusOK, common.SimpleSuccessResponse(data.FakeId.String()))
-		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data.Id))
+		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data.FakeId.String()))
 	}
 }

@@ -6,25 +6,20 @@ import (
 	"nhaancs/component"
 	"nhaancs/modules/category/categorybiz"
 	"nhaancs/modules/category/categorystore"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Delete(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// uid, err := common.FromBase58(c.Param("id"))
-		id, err := strconv.Atoi(c.Param("id"))
+		uid, err := common.FromBase58(c.Param("id"))
 		if err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
 
 		store := categorystore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := categorybiz.NewDeleteBiz(store)
-		// if err := biz.Delete(c.Request.Context(), int(uid.GetLocalID())); err != nil {
-		// 	panic(err)
-		// }
-		if err := biz.Delete(c.Request.Context(), id); err != nil {
+		if err := biz.Delete(c.Request.Context(), int(uid.GetLocalID())); err != nil {
 			panic(err)
 		}
 
