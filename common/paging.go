@@ -14,8 +14,7 @@ func (p *Paging) Fulfill() {
 		p.Page = 1
 	}
 
-	// todo: support no limit, get all?
 	if p.Limit <= 0 {
-		p.Limit = 50
+		p.Limit = 100
 	}
 }
