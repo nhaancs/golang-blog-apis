@@ -11,12 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//todo: search posts
 func List(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var filter postmodel.Filter
 		if err := c.ShouldBind(&filter); err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
+		filter.Fullfill()
 
 		var paging common.Paging
 		if err := c.ShouldBind(&paging); err != nil {

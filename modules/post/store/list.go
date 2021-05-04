@@ -6,7 +6,8 @@ import (
 	"nhaancs/modules/post/model"
 )
 
-func (s *sqlStore) List(ctx context.Context,
+func (s *sqlStore) List(
+	ctx context.Context,
 	conditions map[string]interface{},
 	filter *postmodel.Filter,
 	paging *common.Paging,
@@ -24,11 +25,11 @@ func (s *sqlStore) List(ctx context.Context,
 		Where("deleted_at IS NULL")
 
 	if v := filter; v != nil {
-		if userId, err := common.FromBase58(v.UserId); len(v.UserId) > 0 && err != nil {
-			db = db.Where("user_id = ?", userId.GetLocalID())
+		if v.UserId > 0 {
+			db = db.Where("user_id = ?", v.UserId)
 		}
-		if categoryId, err := common.FromBase58(v.CategoryId); len(v.CategoryId) > 0 && err != nil {
-			db = db.Where("category_id = ?", categoryId.GetLocalID())
+		if v.CategoryId > 0 {
+			db = db.Where("category_id = ?", v.CategoryId)
 		}
 	}
 

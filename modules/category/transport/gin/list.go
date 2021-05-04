@@ -17,6 +17,7 @@ func List(appCtx component.AppContext) gin.HandlerFunc {
 		if err := c.ShouldBind(&filter); err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
+		filter.Fullfill()
 
 		var paging common.Paging
 		if err := c.ShouldBind(&paging); err != nil {
