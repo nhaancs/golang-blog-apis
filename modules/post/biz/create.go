@@ -36,7 +36,7 @@ func (biz *createBiz) Create(ctx context.Context, data *postmodel.PostCreate) er
 
 	// todo: validate category
 	// todo: validate author
-	data.UserId = common.NewUID(1, common.DbTypeUser, 1)
+	data.UserId = 1
 	if err := biz.store.Create(ctx, data); err != nil {
 		return common.ErrCannotCreateEntity(postmodel.EntityName, err)
 	}

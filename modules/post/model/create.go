@@ -17,12 +17,24 @@ type PostCreate struct {
 	Image                 *common.Image `json:"image" gorm:"column:image;"`
 	PublishedAt           *time.Time    `json:"published_at" gorm:"column:published_at;autoCreateTime;"`
 	Keywords              string        `json:"keywords" gorm:"column:keywords;"`
-	CategoryId            *common.UID   `json:"category_id" gorm:"column:category_id;"`
-	UserId                *common.UID   `json:"user_id" gorm:"column:user_id;"`
+	CategoryId            int           `json:"-" gorm:"column:category_id;"`
+	UserId                int           `json:"-" gorm:"column:user_id;"`
+	FakeCategoryId        *common.UID   `json:"category_id" gorm:"-"`
+	FakeUserId            *common.UID   `json:"user_id" gorm:"-"`
 }
 
 func (PostCreate) TableName() string {
 	return Post{}.TableName()
+}
+
+func (p *PostCreate) Fulfill() {
+	if (p.FakeCategoryId != nil) {
+		p.CategoryId = int(p.FakeCategoryId.GetLocalID())
+	}
+
+	if (p.FakeUserId != nil) {
+		p.UserId = int(p.FakeUserId.GetLocalID())
+	}
 }
 
 func (res *PostCreate) Validate() error {
@@ -65,7 +77,7 @@ func (res *PostCreate) Validate() error {
 	if res.Image == nil {
 		return ErrPostImageCannotBeEmpty
 	}
-	if res.CategoryId == nil {
+	if res.FakeCategoryId == nil {
 		return ErrPostCategoryCannotBeEmpty
 	}
 	if len(res.Keywords) > 255 {

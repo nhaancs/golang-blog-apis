@@ -17,11 +17,18 @@ type PostUpdate struct {
 	Image                 *common.Image `json:"image" gorm:"column:image;"`
 	PublishedAt           *time.Time    `json:"published_at" gorm:"column:published_at"`
 	Keywords              *string       `json:"keywords" gorm:"column:keywords;"`
-	CategoryId            *common.UID   `json:"category_id" gorm:"column:category_id;"`
+	CategoryId            int           `json:"-" gorm:"column:category_id;"`
+	FakeCategoryId        *common.UID   `json:"category_id" gorm:"-"`
 }
 
 func (PostUpdate) TableName() string {
 	return Post{}.TableName()
+}
+
+func (p *PostUpdate) Fulfill() {
+	if (p.FakeCategoryId != nil) {
+		p.CategoryId = int(p.FakeCategoryId.GetLocalID())
+	}
 }
 
 func (res *PostUpdate) Validate() error {
@@ -66,7 +73,7 @@ func (res *PostUpdate) Validate() error {
 	if res.Image == nil {
 		return ErrPostImageCannotBeEmpty
 	}
-	if res.CategoryId == nil {
+	if res.FakeCategoryId == nil {
 		return ErrPostCategoryCannotBeEmpty
 	}
 	if len(*res.Keywords) > 255 {

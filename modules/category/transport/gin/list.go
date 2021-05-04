@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"nhaancs/common"
 	"nhaancs/component"
-	"nhaancs/modules/category/biz"
-	"nhaancs/modules/category/model"
-	"nhaancs/modules/category/store"
+	categorybiz "nhaancs/modules/category/biz"
+	categorymodel "nhaancs/modules/category/model"
+	categorystore "nhaancs/modules/category/store"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +17,7 @@ func List(appCtx component.AppContext) gin.HandlerFunc {
 		if err := c.ShouldBind(&filter); err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
-		filter.Fullfill()
+		filter.Fulfill()
 
 		var paging common.Paging
 		if err := c.ShouldBind(&paging); err != nil {

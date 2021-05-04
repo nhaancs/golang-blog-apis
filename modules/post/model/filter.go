@@ -6,12 +6,12 @@ import (
 
 type Filter struct {
 	FakeCategoryId string `json:"category_id,omitempty" form:"category_id"`
-	CategoryId     int    `json:"-"`
 	FakeUserId     string `json:"user_id,omitempty" form:"user_id"`
+	CategoryId     int    `json:"-"`
 	UserId         int    `json:"-"`
 }
 
-func (f *Filter) Fullfill() {
+func (f *Filter) Fulfill() {
 	if len(f.FakeCategoryId) > 0 {
 		if categoryId, err := common.FromBase58(f.FakeCategoryId); err == nil {
 			f.CategoryId = int(categoryId.GetLocalID())

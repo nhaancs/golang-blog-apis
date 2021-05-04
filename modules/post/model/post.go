@@ -18,8 +18,8 @@ type Post struct {
 	PublishedAt     *time.Time    `json:"published_at" gorm:"column:published_at;"`
 	Keywords        string        `json:"keywords" gorm:"column:keywords;"`
 	CategoryId      int           `json:"-" gorm:"column:category_id;"`
-	FakeCategoryId  *common.UID   `json:"category_id" gorm:"-"`
 	UserId          int           `json:"-" gorm:"column:user_id;"`
+	FakeCategoryId  *common.UID   `json:"category_id" gorm:"-"`
 	FakeUserId      *common.UID   `json:"user_id" gorm:"-"`
 	FavoriteCount   int           `json:"favorite_count" gorm:"-"`
 }

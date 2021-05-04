@@ -18,14 +18,15 @@ func Update(appCtx component.AppContext) gin.HandlerFunc {
 			panic(common.ErrInvalidRequest(err))
 		}
 
-		var data postmodel.PostUpdate
-		if err := c.ShouldBind(&data); err != nil {
+		var data = new(postmodel.PostUpdate)
+		if err := c.ShouldBind(data); err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
+		data.Fulfill()
 
 		store := poststore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := postbiz.NewUpdateBiz(store)
-		if err := biz.Update(c.Request.Context(), int(uid.GetLocalID()), &data); err != nil {
+		if err := biz.Update(c.Request.Context(), int(uid.GetLocalID()), data); err != nil {
 			panic(err)
 		}
 
