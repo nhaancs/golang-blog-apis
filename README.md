@@ -1,3 +1,18 @@
 # blog
-- implement favorite
-- add favorite count to get post detail
+
+## Getting started
+```bash
+make rundb
+```
+
+```bash
+make buildmigrator
+```
+
+```bash
+make migrateup
+```
+
+```bash
+make start
+```

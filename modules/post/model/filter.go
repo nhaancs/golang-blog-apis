@@ -1,5 +1,6 @@
 package postmodel
 
 type Filter struct {
-	// CityId int `json:"city_id,omitempty" form:"city_id"`
+	CategoryId string `json:"category_id,omitempty" form:"category_id"`
+	UserId     string `json:"user_id,omitempty" form:"user_id"`
 }

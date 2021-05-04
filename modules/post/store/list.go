@@ -23,11 +23,14 @@ func (s *sqlStore) List(ctx context.Context,
 		Where(conditions).
 		Where("deleted_at IS NULL")
 
-	// if v := filter; v != nil {
-	// 	if v.CityId > 0 {
-	// 		db = db.Where("city_id = ?", v.CityId)
-	// 	}
-	// }
+	if v := filter; v != nil {
+		if userId, err := common.FromBase58(v.UserId); len(v.UserId) > 0 && err != nil {
+			db = db.Where("user_id = ?", userId.GetLocalID())
+		}
+		if categoryId, err := common.FromBase58(v.CategoryId); len(v.CategoryId) > 0 && err != nil {
+			db = db.Where("category_id = ?", categoryId.GetLocalID())
+		}
+	}
 
 	if err := db.Count(&paging.Total).Error; err != nil {
 		return nil, common.ErrDB(err)

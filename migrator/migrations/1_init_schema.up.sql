@@ -39,8 +39,8 @@ CREATE TABLE `posts` (
   `image` json NOT NULL,
   `published_at` datetime DEFAULT (now()),
   `keywords` varchar(255),
-  `category_id` int,
-  `user_id` int
+  `category_id` int NOT NULL,
+  `user_id` int NOT NULL
 );
 
 CREATE TABLE `comments` (

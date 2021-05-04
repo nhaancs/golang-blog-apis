@@ -20,8 +20,9 @@ type UID struct {
 	shardID    uint32
 }
 
-func NewUID(localID uint32, objType int, shardID uint32) UID {
-	return UID{
+// todo: check with Viet Tran about return a pointer
+func NewUID(localID uint32, objType int, shardID uint32) *UID {
+	return &UID{
 		localID:    localID,
 		objectType: objType,
 		shardID:    shardID,
@@ -141,7 +142,7 @@ func (uid *UID) Scan(value interface{}) error {
 		return errors.New("invalid Scan Source")
 	}
 
-	*uid = NewUID(i, 0, 1)
+	*uid = *NewUID(i, 0, 1)
 
 	return nil
 }

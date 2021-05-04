@@ -21,11 +21,9 @@ type SQLUpdateModel struct {
 }
 
 func (m *SQLModel) GenUID(dbType int) {
-	uid := NewUID(uint32(m.Id), dbType, 1)
-	m.FakeId = &uid
+	m.FakeId = NewUID(uint32(m.Id), dbType, 1)
 }
 
 func (m *SQLCreateModel) GenUID(dbType int) {
-	uid := NewUID(uint32(m.Id), dbType, 1)
-	m.FakeId = &uid
+	m.FakeId = NewUID(uint32(m.Id), dbType, 1)
 }

@@ -7,6 +7,7 @@ import (
 
 const EntityName = "Post"
 
+// todo: how to get user and category object, what if separate as microservice
 type Post struct {
 	common.SQLModel `json:",inline"`
 	Title           string        `json:"title" gorm:"column:title;"`
@@ -16,17 +17,21 @@ type Post struct {
 	Image           *common.Image `json:"image" gorm:"column:image;"`
 	PublishedAt     *time.Time    `json:"published_at" gorm:"column:published_at;"`
 	Keywords        string        `json:"keywords" gorm:"column:keywords;"`
-	CategoryId      int           `json:"category_id" gorm:"column:category_id;"`
-	UserId          int           `json:"user_id" gorm:"column:user_id;"`
+	CategoryId      int           `json:"-" gorm:"column:category_id;"`
+	FakeCategoryId  *common.UID   `json:"category_id" gorm:"-"`
+	UserId          int           `json:"-" gorm:"column:user_id;"`
+	FakeUserId      *common.UID   `json:"user_id" gorm:"-"`
 	FavoriteCount   int           `json:"favorite_count" gorm:"-"`
-}
-
-func (Post) TableName() string {
-	return "posts"
 }
 
 func (data *Post) Mask(isAdmin bool) {
 	data.GenUID(common.DbTypePost)
+	data.FakeCategoryId = common.NewUID(uint32(data.CategoryId), common.DbTypeCategory, 1)
+	data.FakeUserId = common.NewUID(uint32(data.UserId), common.DbTypeUser, 1)
+}
+
+func (Post) TableName() string {
+	return "posts"
 }
 
 var (

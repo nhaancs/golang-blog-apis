@@ -8,7 +8,6 @@ import (
 	"github.com/gosimple/slug"
 )
 
-// todo: use fake id in create/update/list/get
 type PostCreate struct {
 	common.SQLCreateModel `json:",inline"`
 	Title                 string        `json:"title" gorm:"column:title;"`
@@ -18,8 +17,8 @@ type PostCreate struct {
 	Image                 *common.Image `json:"image" gorm:"column:image;"`
 	PublishedAt           *time.Time    `json:"published_at" gorm:"column:published_at;autoCreateTime;"`
 	Keywords              string        `json:"keywords" gorm:"column:keywords;"`
-	CategoryId            int           `json:"category_id" gorm:"column:category_id;"`
-	UserId                int           `json:"user_id" gorm:"column:user_id;"`
+	CategoryId            *common.UID   `json:"category_id" gorm:"column:category_id;"`
+	UserId                *common.UID   `json:"user_id" gorm:"column:user_id;"`
 }
 
 func (PostCreate) TableName() string {
@@ -66,7 +65,7 @@ func (res *PostCreate) Validate() error {
 	if res.Image == nil {
 		return ErrPostImageCannotBeEmpty
 	}
-	if res.CategoryId == 0 {
+	if res.CategoryId == nil {
 		return ErrPostCategoryCannotBeEmpty
 	}
 	if len(res.Keywords) > 255 {
