@@ -8,6 +8,7 @@ import (
 	"nhaancs/modules/category/transport/gin"
 	"nhaancs/modules/post/transport/gin"
 	"nhaancs/modules/upload/transport/gin"
+	"nhaancs/modules/favorite/transport/gin"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -46,7 +47,6 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider) error {
 
 	v1 := r.Group("v1")
 	v1.POST("/upload-image", ginupload.UploadImage(appCtx))
-
 	categories := v1.Group("/categories")
 	{
 		categories.POST("", gincategory.Create(appCtx))
@@ -62,6 +62,12 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider) error {
 		posts.GET("", ginpost.List(appCtx))
 		posts.PATCH("/:id", ginpost.Update(appCtx))
 		posts.DELETE("/:id", ginpost.Delete(appCtx))
+	}
+	favorites := v1.Group("/favorites")
+	{
+		favorites.POST("", ginfavorite.Favorite(appCtx))
+		favorites.GET("", ginfavorite.List(appCtx))
+		favorites.DELETE("/:postId", ginfavorite.Unfavorite(appCtx))
 	}
 
 	return r.Run()

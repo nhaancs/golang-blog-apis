@@ -1,21 +1,19 @@
-package ginpost
+package ginfavorite
 
 import (
 	"net/http"
 	"nhaancs/common"
 	"nhaancs/component"
+	favoritebiz "nhaancs/modules/favorite/biz"
+	favoritemodel "nhaancs/modules/favorite/model"
 	favoritestore "nhaancs/modules/favorite/store"
-	postbiz "nhaancs/modules/post/biz"
-	postmodel "nhaancs/modules/post/model"
-	poststore "nhaancs/modules/post/store"
 
 	"github.com/gin-gonic/gin"
 )
 
-//todo: search posts
 func List(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var filter postmodel.Filter
+		var filter favoritemodel.Filter
 		if err := c.ShouldBind(&filter); err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
@@ -27,20 +25,20 @@ func List(appCtx component.AppContext) gin.HandlerFunc {
 		}
 		paging.Fulfill()
 
-		store := poststore.NewSQLStore(appCtx.GetMainDBConnection())
-		favoriteStore := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
-		biz := postbiz.NewListBiz(store, favoriteStore)
+		store := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
+		biz := favoritebiz.NewListBiz(store)
 		result, err := biz.List(c.Request.Context(), &filter, &paging)
 		if err != nil {
 			panic(err)
 		}
 
 		for i := range result {
+			// todo: what if user and admin use the same list api
 			result[i].Mask(false)
 
-			if i == len(result)-1 {
-				paging.NextCursor = result[i].FakeId.String()
-			}
+			// if i == len(result)-1 {
+			// 	paging.NextCursor = result[i].FakeId.String()
+			// }
 		}
 
 		c.JSON(http.StatusOK, common.NewSuccessResponse(result, paging, filter))

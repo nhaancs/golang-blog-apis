@@ -27,12 +27,11 @@ type FavoriteStore interface {
 
 type listBiz struct {
 	store ListStore
-	// favoriteStore FavoriteStore
+	favoriteStore FavoriteStore
 }
 
-// , favoriteStore FavoriteStore
-func NewListBiz(store ListStore) *listBiz {
-	return &listBiz{store: store}
+func NewListBiz(store ListStore , favoriteStore FavoriteStore) *listBiz {
+	return &listBiz{store: store, favoriteStore: favoriteStore}
 }
 
 func (biz *listBiz) List(
@@ -45,16 +44,16 @@ func (biz *listBiz) List(
 		return nil, common.ErrCannotListEntity(postmodel.EntityName, err)
 	}
 
-	// ids := make([]int, len(result))
-	// for i := range result {
-	// 	ids[i] = result[i].Id
-	// }
-	// postFavoriteMap, _ := biz.favoriteStore.GetFavoriteCountsOfPosts(ctx, ids) // ignore error
-	// if v := postFavoriteMap; v != nil {
-	// 	for i := range result {
-	// 		result[i].FavoriteCount = postFavoriteMap[result[i].Id]
-	// 	}
-	// }
+	ids := make([]int, len(result))
+	for i := range result {
+		ids[i] = result[i].Id
+	}
+	postFavoriteMap, _ := biz.favoriteStore.GetFavoriteCountsOfPosts(ctx, ids) // ignore error
+	if v := postFavoriteMap; v != nil {
+		for i := range result {
+			result[i].FavoriteCount = postFavoriteMap[result[i].Id]
+		}
+	}
 
 	return result, nil
 }

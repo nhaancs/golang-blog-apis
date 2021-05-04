@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"nhaancs/common"
 	"nhaancs/component"
+	favoritestore "nhaancs/modules/favorite/store"
 	"nhaancs/modules/post/biz"
 	"nhaancs/modules/post/store"
 
@@ -18,7 +19,8 @@ func Get(appCtx component.AppContext) gin.HandlerFunc {
 		}
 
 		store := poststore.NewSQLStore(appCtx.GetMainDBConnection())
-		biz := postbiz.NewGetBiz(store)
+		favoriteStore := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
+		biz := postbiz.NewGetBiz(store, favoriteStore)
 		data, err := biz.Get(c.Request.Context(), int(uid.GetLocalID()))
 		if err != nil {
 			panic(err)

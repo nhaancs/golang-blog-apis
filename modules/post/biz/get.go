@@ -16,11 +16,11 @@ type GetStore interface {
 
 type getBiz struct {
 	store GetStore
-	// favoriteStore FavoriteStore
+	favoriteStore FavoriteStore
 }
 
-func NewGetBiz(store GetStore) *getBiz {
-	return &getBiz{store: store}
+func NewGetBiz(store GetStore, favoriteStore FavoriteStore) *getBiz {
+	return &getBiz{store: store, favoriteStore: favoriteStore}
 }
 
 func (biz *getBiz) Get(ctx context.Context, id int) (*postmodel.Post, error) {
@@ -37,11 +37,11 @@ func (biz *getBiz) Get(ctx context.Context, id int) (*postmodel.Post, error) {
 		return nil, common.ErrEntityDeleted(postmodel.EntityName, nil)
 	}
 
-	// ids := []int{data.Id}
-	// postFavoriteMap, _ := biz.favoriteStore.GetFavoriteCountsOfPosts(ctx, ids) // ignore error
-	// if v := postFavoriteMap; v != nil {
-	// 	data.FavoriteCount = postFavoriteMap[data.Id]
-	// }
+	ids := []int{data.Id}
+	postFavoriteMap, _ := biz.favoriteStore.GetFavoriteCountsOfPosts(ctx, ids) // ignore error
+	if v := postFavoriteMap; v != nil {
+		data.FavoriteCount = postFavoriteMap[data.Id]
+	}
 
 	return data, nil
 }
