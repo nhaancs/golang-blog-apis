@@ -7,7 +7,6 @@ import (
 
 const EntityName = "Post"
 
-// todo: how to get user and category object, what if separate as microservice
 type Post struct {
 	common.SQLModel `json:",inline"`
 	Title           string        `json:"title" gorm:"column:title;"`
@@ -19,8 +18,8 @@ type Post struct {
 	Keywords        string        `json:"keywords" gorm:"column:keywords;"`
 	CategoryId      int           `json:"-" gorm:"column:category_id;"`
 	UserId          int           `json:"-" gorm:"column:user_id;"`
-	FakeCategoryId  *common.UID   `json:"category_id" gorm:"-"`
-	FakeUserId      *common.UID   `json:"user_id" gorm:"-"`
+	FakeCategoryId  *common.UID   `json:"category_id" gorm:"-"` // todo: dont need show fake id here, only mart sub object
+	FakeUserId      *common.UID   `json:"user_id" gorm:"-"` // todo: dont need show fake id here, only mart sub object, use common.SimpleUser
 	FavoriteCount   int           `json:"favorite_count" gorm:"-"`
 }
 
