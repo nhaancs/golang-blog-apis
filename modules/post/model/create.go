@@ -20,7 +20,7 @@ type PostCreate struct {
 	CategoryId            int           `json:"-" gorm:"column:category_id;"`
 	UserId                int           `json:"-" gorm:"column:user_id;"`
 	FakeCategoryId        *common.UID   `json:"category_id" gorm:"-"`
-	FakeUserId            *common.UID   `json:"user_id" gorm:"-"`
+	FakeUserId            *common.UID   `json:"-" gorm:"-"`
 }
 
 func (PostCreate) TableName() string {

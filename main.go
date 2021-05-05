@@ -5,10 +5,11 @@ import (
 	"nhaancs/component"
 	"nhaancs/component/uploadprovider"
 	"nhaancs/middleware"
-	"nhaancs/modules/category/transport/gin"
-	"nhaancs/modules/post/transport/gin"
-	"nhaancs/modules/upload/transport/gin"
-	"nhaancs/modules/favorite/transport/gin"
+	gincategory "nhaancs/modules/category/transport/gin"
+	ginfavorite "nhaancs/modules/favorite/transport/gin"
+	ginpost "nhaancs/modules/post/transport/gin"
+	ginupload "nhaancs/modules/upload/transport/gin"
+	ginuser "nhaancs/modules/user/transport/gin"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -34,19 +35,23 @@ func main() {
 		os.Getenv("S3_SECRET_KEY"),
 		os.Getenv("S3_DOMAIN"),
 	)
+	secretKey := os.Getenv("AUTH_SECRET")
 
-	if err := runService(db, s3Provider); err != nil {
+	if err := runService(db, s3Provider, secretKey); err != nil {
 		log.Fatalln("Error running service: ", err)
 	}
 }
 
-func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider) error {
-	appCtx := component.NewAppContext(db, upProvider)
+func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey string) error {
+	appCtx := component.NewAppContext(db, upProvider, secretKey)
 	r := gin.Default()
 	r.Use(middleware.Recover(appCtx))
 
 	v1 := r.Group("v1")
 	v1.POST("/upload-image", ginupload.UploadImage(appCtx))
+	v1.POST("/register", ginuser.Register(appCtx))
+	v1.POST("/login", ginuser.Login(appCtx))
+	v1.GET("/profile", middleware.RequiredAuth(appCtx), ginuser.GetProfile(appCtx))
 	categories := v1.Group("/categories")
 	{
 		categories.POST("", gincategory.Create(appCtx))
