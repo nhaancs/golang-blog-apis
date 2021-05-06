@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"nhaancs/common"
 	"nhaancs/component"
+	"nhaancs/modules/category/store"
 	postbiz "nhaancs/modules/post/biz"
 	postmodel "nhaancs/modules/post/model"
 	poststore "nhaancs/modules/post/store"
@@ -22,7 +23,8 @@ func Create(appCtx component.AppContext) gin.HandlerFunc {
 		data.UserId = requester.GetUserId()
 
 		store := poststore.NewSQLStore(appCtx.GetMainDBConnection())
-		biz := postbiz.NewCreateBiz(store)
+		categoryStore := categorystore.NewSQLStore(appCtx.GetMainDBConnection())
+		biz := postbiz.NewCreateBiz(store, categoryStore)
 		if err := biz.Create(c.Request.Context(), data); err != nil {
 			panic(err)
 		}

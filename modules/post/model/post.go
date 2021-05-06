@@ -23,6 +23,7 @@ type Post struct {
 	FavoriteCount   int           `json:"favorite_count" gorm:"-"`
 }
 
+// We can get role info from common.Requester
 func (data *Post) Mask(isAdmin bool) {
 	data.GenUID(common.DbTypePost)
 	data.FakeCategoryId = common.NewUID(uint32(data.CategoryId), common.DbTypeCategory, 1)

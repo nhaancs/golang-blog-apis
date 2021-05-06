@@ -52,7 +52,7 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 	v1.POST("/login", ginuser.Login(appCtx))
 	v1.GET("/profile", middleware.RequiredAuth(appCtx), ginuser.GetProfile(appCtx))
 	// v1.GET("/liked-posts", middleware.RequiredAuth(appCtx), middleware.RequiredUser(appCtx), ginfavorite.List(appCtx)) // todo: implement
-	v1.POST("/upload-image", middleware.RequiredAuth(appCtx), ginupload.UploadImage(appCtx))
+	v1.POST("/upload-image", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), ginupload.UploadImage(appCtx))
 	categories := v1.Group("/categories")
 	{
 		categories.POST("", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), gincategory.Create(appCtx))
