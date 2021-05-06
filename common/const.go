@@ -9,6 +9,8 @@ const (
 )
 
 const CurrentUser = "user"
+const AdminRole = "admin"
+const UserRole = "user"
 
 type Requester interface {
 	GetUserId() int
