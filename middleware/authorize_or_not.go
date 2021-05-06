@@ -1,5 +1,7 @@
 package middleware
 
+// todo: implement authorize or not middleware
+
 import (
 	"errors"
 	"nhaancs/common"
@@ -13,7 +15,7 @@ import (
 // 1. Get token from header
 // 2. Validate token and parse to payload
 // 3. From the token payload, we use user_id to find from DB
-func RequiredAuth(appCtx component.AppContext) func(c *gin.Context) {
+func RequiredAuthOrNot(appCtx component.AppContext) func(c *gin.Context) {
 	tokenProvider := jwt.NewTokenJWTProvider(appCtx.SecretKey())
 	return func(c *gin.Context) {
 		token, err := common.ExtractTokenFromHeaderString(c.GetHeader("Authorization"))

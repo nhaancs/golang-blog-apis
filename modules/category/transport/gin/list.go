@@ -27,13 +27,12 @@ func List(appCtx component.AppContext) gin.HandlerFunc {
 
 		store := categorystore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := categorybiz.NewListBiz(store)
-		result, err := biz.List(c.Request.Context(), &filter, &paging)
+		result, err := biz.List(c.Request.Context(), &filter, &paging, common.IsRequesterAdmin(c))
 		if err != nil {
 			panic(err)
 		}
 
 		for i := range result {
-			// todo: what if user and admin use the same list api
 			result[i].Mask(false)
 
 			if i == len(result)-1 {

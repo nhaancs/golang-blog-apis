@@ -27,8 +27,13 @@ func (biz *listBiz) List(
 	ctx context.Context,
 	filter *categorymodel.Filter,
 	paging *common.Paging,
+	isAdmin bool,
 ) ([]categorymodel.Category, error) {
-	result, err := biz.store.List(ctx, nil, filter, paging)
+	conditions := map[string]interface{}{}
+	if !isAdmin {
+		conditions["is_enabled"] = true
+	}
+	result, err := biz.store.List(ctx, conditions, filter, paging)
 	if err != nil {
 		return nil, common.ErrCannotListEntity(categorymodel.EntityName, err)
 	}

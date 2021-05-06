@@ -39,5 +39,7 @@ func (biz *deleteBiz) Delete(ctx context.Context, id int) error {
 		return common.ErrCannotDeleteEntity(categorymodel.EntityName, err)
 	}
 
+	// todo: create a cron job to delete all posts belong to this category
+
 	return nil
 }

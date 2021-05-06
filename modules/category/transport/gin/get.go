@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"nhaancs/common"
 	"nhaancs/component"
-	"nhaancs/modules/category/biz"
-	"nhaancs/modules/category/store"
+	categorybiz "nhaancs/modules/category/biz"
+	categorystore "nhaancs/modules/category/store"
 
 	"github.com/gin-gonic/gin"
 )

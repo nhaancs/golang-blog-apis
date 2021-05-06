@@ -3,7 +3,7 @@ package categorystore
 import (
 	"context"
 	"nhaancs/common"
-	"nhaancs/modules/category/model"
+	categorymodel "nhaancs/modules/category/model"
 )
 
 func (s *sqlStore) List(ctx context.Context,

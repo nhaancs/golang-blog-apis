@@ -1,7 +1,7 @@
 package categorymodel
 
 type Filter struct {
-	// CityId int `json:"city_id,omitempty" form:"city_id"`
+	// IsEnabled bool `json:"is_enabled,omitempty" form:"is_enabled"`
 }
 
 func (f *Filter) Fulfill() {

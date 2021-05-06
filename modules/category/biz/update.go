@@ -3,7 +3,7 @@ package categorybiz
 import (
 	"context"
 	"nhaancs/common"
-	"nhaancs/modules/category/model"
+	categorymodel "nhaancs/modules/category/model"
 )
 
 type UpdateStore interface {
@@ -50,5 +50,10 @@ func (biz *updateBiz) Update(ctx context.Context, id int, data *categorymodel.Ca
 	if err := biz.store.UpdateData(ctx, id, data); err != nil {
 		return common.ErrCannotUpdateEntity(categorymodel.EntityName, err)
 	}
+
+	if data.IsEnabled != nil && !*data.IsEnabled {
+		// todo: create a cron job to disable all posts in this category
+	}
+	
 	return nil
 }
