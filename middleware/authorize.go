@@ -36,28 +36,22 @@ func extractTokenFromHeaderString(s string) (string, error) {
 // 3. From the token payload, we use user_id to find from DB
 func RequiredAuth(appCtx component.AppContext) func(c *gin.Context) {
 	tokenProvider := jwt.NewTokenJWTProvider(appCtx.SecretKey())
-
 	return func(c *gin.Context) {
 		token, err := extractTokenFromHeaderString(c.GetHeader("Authorization"))
-
 		if err != nil {
 			panic(err)
 		}
-
-		db := appCtx.GetMainDBConnection()
-		store := userstorage.NewSQLStore(db)
 
 		payload, err := tokenProvider.Validate(token)
 		if err != nil {
 			panic(err)
 		}
-
+		db := appCtx.GetMainDBConnection()
+		store := userstorage.NewSQLStore(db)
 		user, err := store.FindUser(c.Request.Context(), map[string]interface{}{"id": payload.UserId})
-
 		if err != nil {
 			panic(err)
 		}
-
 		if user.DeletedAt != nil || !user.IsEnabled {
 			panic(common.ErrNoPermission(errors.New("user has been deleted or banned")))
 		}
