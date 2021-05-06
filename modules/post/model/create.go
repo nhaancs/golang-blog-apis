@@ -28,11 +28,11 @@ func (PostCreate) TableName() string {
 }
 
 func (p *PostCreate) Fulfill() {
-	if (p.FakeCategoryId != nil) {
+	if p.FakeCategoryId != nil {
 		p.CategoryId = int(p.FakeCategoryId.GetLocalID())
 	}
 
-	if (p.FakeUserId != nil) {
+	if p.FakeUserId != nil {
 		p.UserId = int(p.FakeUserId.GetLocalID())
 	}
 }

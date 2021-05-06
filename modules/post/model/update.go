@@ -26,7 +26,7 @@ func (PostUpdate) TableName() string {
 }
 
 func (p *PostUpdate) Fulfill() {
-	if (p.FakeCategoryId != nil) {
+	if p.FakeCategoryId != nil {
 		p.CategoryId = int(p.FakeCategoryId.GetLocalID())
 	}
 }

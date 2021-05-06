@@ -13,7 +13,7 @@ type FavoriteCreate struct {
 }
 
 func (p *FavoriteCreate) Fulfill() {
-	if (p.FakePostId != nil) {
+	if p.FakePostId != nil {
 		p.PostId = int(p.FakePostId.GetLocalID())
 	}
 }
@@ -31,5 +31,5 @@ func (res *FavoriteCreate) Validate() error {
 }
 
 func (data *FavoriteCreate) Mask(isAdmin bool) {
-	
+
 }

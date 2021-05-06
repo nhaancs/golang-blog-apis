@@ -17,7 +17,7 @@ func Unfavorite(appCtx component.AppContext) gin.HandlerFunc {
 			panic(common.ErrInvalidRequest(err))
 		}
 
-		// todo: get user id 
+		// todo: get user id
 		userId := 1
 		store := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := favoritebiz.NewUnfavoriteBiz(store)

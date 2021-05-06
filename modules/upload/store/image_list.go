@@ -50,4 +50,3 @@ func (s *sqlStore) List(ctx context.Context,
 
 	return result, nil
 }
-

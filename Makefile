@@ -15,5 +15,7 @@ migrateup:
 	@docker run --network host migrator -path="/migrations/" -database "mysql://${DSN}" up
 start:
 	@go run .
+format:
+	@go fmt ./...
 
 .PHONY: rundb startdb migrateup buildmigrator start

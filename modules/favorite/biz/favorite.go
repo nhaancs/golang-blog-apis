@@ -28,7 +28,7 @@ func (biz *favoriteBiz) Favorite(ctx context.Context, data *favoritemodel.Favori
 		return err
 	}
 
-	//todo: get a post to check(exist, not deleted) 
+	//todo: get a post to check(exist, not deleted)
 	{
 		_, err := biz.store.Get(ctx, map[string]interface{}{"user_id": data.UserId, "post_id": data.PostId})
 		if err != common.ErrRecordNotFound {

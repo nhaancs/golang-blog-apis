@@ -5,7 +5,7 @@ import (
 )
 
 type UploadedImage struct {
-	common.SQLCreateModel 
+	common.SQLCreateModel
 	ImageInfo *common.Image `gorm:"column:image_info;"`
 }
 

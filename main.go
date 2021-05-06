@@ -52,25 +52,25 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 	v1.POST("/register", ginuser.Register(appCtx))
 	v1.POST("/login", ginuser.Login(appCtx))
 	v1.GET("/profile", middleware.RequiredAuth(appCtx), ginuser.GetProfile(appCtx))
-	// posts.GET("/liked-posts", ginfavorite.List(appCtx)) // todo: move to user
+	v1.GET("/liked-posts", middleware.RequiredAuth(appCtx), ginfavorite.List(appCtx)) // todo: implement
 	categories := v1.Group("/categories")
 	{
-		categories.POST("", gincategory.Create(appCtx))
-		categories.GET("/:id", gincategory.Get(appCtx))
+		categories.POST("", middleware.RequiredAuth(appCtx), gincategory.Create(appCtx))
+		categories.GET("/:id", middleware.RequiredAuth(appCtx), gincategory.Get(appCtx))
 		categories.GET("", gincategory.List(appCtx))
-		categories.PATCH("/:id", gincategory.Update(appCtx))
-		categories.DELETE("/:id", gincategory.Delete(appCtx))
+		categories.PATCH("/:id", middleware.RequiredAuth(appCtx), gincategory.Update(appCtx))
+		categories.DELETE("/:id", middleware.RequiredAuth(appCtx), gincategory.Delete(appCtx))
 	}
 	posts := v1.Group("/posts")
 	{
-		posts.POST("", ginpost.Create(appCtx))
-		posts.GET("/:id", ginpost.Get(appCtx))
+		posts.POST("", middleware.RequiredAuth(appCtx), ginpost.Create(appCtx))
+		posts.GET("/:id", middleware.RequiredAuth(appCtx), ginpost.Get(appCtx))
 		posts.GET("", ginpost.List(appCtx))
-		posts.PATCH("/:id", ginpost.Update(appCtx))
-		posts.DELETE("/:id", ginpost.Delete(appCtx))
-		posts.POST("/:id/favorite", ginfavorite.Favorite(appCtx))
-		posts.DELETE("/:id/unfavorite", ginfavorite.Unfavorite(appCtx))
-		posts.GET("/:id/liked-users", ginfavorite.List(appCtx))
+		posts.PATCH("/:id", middleware.RequiredAuth(appCtx), ginpost.Update(appCtx))
+		posts.DELETE("/:id", middleware.RequiredAuth(appCtx), ginpost.Delete(appCtx))
+		posts.POST("/:id/favorite", middleware.RequiredAuth(appCtx), ginfavorite.Favorite(appCtx))
+		posts.DELETE("/:id/unfavorite", middleware.RequiredAuth(appCtx), ginfavorite.Unfavorite(appCtx))
+		posts.GET("/:id/liked-users", middleware.RequiredAuth(appCtx), ginfavorite.List(appCtx)) // todo: implement
 	}
 
 	return r.Run()

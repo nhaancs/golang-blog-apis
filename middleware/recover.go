@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"github.com/gin-gonic/gin"
 	"nhaancs/common"
 	"nhaancs/component"
-	"github.com/gin-gonic/gin"
 )
 
 func Recover(ac component.AppContext) gin.HandlerFunc {

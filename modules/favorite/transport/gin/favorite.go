@@ -31,7 +31,7 @@ func Favorite(appCtx component.AppContext) gin.HandlerFunc {
 		if err := biz.Favorite(c.Request.Context(), data); err != nil {
 			panic(err)
 		}
-		
+
 		c.JSON(http.StatusOK, common.SimpleSuccessResponse(true))
 	}
 }

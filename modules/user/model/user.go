@@ -40,21 +40,21 @@ func (u *User) Mask(isAdmin bool) {
 }
 
 var (
-	ErrEmailCannotBeEmpty  = common.NewCustomError(nil, "email can't be blank", "ErrEmailCannotBeEmpty")
+	ErrEmailCannotBeEmpty     = common.NewCustomError(nil, "email can't be blank", "ErrEmailCannotBeEmpty")
 	ErrEmailExisted           = common.NewCustomError(nil, "email has already existed", "ErrEmailExisted")
 	ErrInvalidEmail           = common.NewCustomError(nil, "invalid email", "ErrInvalidEmail")
-	ErrEmailIsTooLong           = common.NewCustomError(nil, "email is too long", "ErrEmailIsTooLong") 
+	ErrEmailIsTooLong         = common.NewCustomError(nil, "email is too long", "ErrEmailIsTooLong")
 	ErrEmailOrPasswordInvalid = common.NewCustomError(nil, "email or password invalid", "ErrEmailOrPasswordInvalid")
-	
-	ErrInvalidPassword        = common.NewCustomError(nil, "invalid password", "ErrInvalidPassword")
-	ErrPasswordCannotBeEmpty  = common.NewCustomError(nil, "password can't be blank", "ErrPasswordCannotBeEmpty")
-	
-	ErrLastNameCannotBeEmpty  = common.NewCustomError(nil, "last name can't be blank", "ErrLastNameCannotBeEmpty")
-	ErrLastNameIsTooLong           = common.NewCustomError(nil, "last name is too long", "ErrLastNameIsTooLong") 
-	
+
+	ErrInvalidPassword       = common.NewCustomError(nil, "invalid password", "ErrInvalidPassword")
+	ErrPasswordCannotBeEmpty = common.NewCustomError(nil, "password can't be blank", "ErrPasswordCannotBeEmpty")
+
+	ErrLastNameCannotBeEmpty = common.NewCustomError(nil, "last name can't be blank", "ErrLastNameCannotBeEmpty")
+	ErrLastNameIsTooLong     = common.NewCustomError(nil, "last name is too long", "ErrLastNameIsTooLong")
+
 	ErrFirstNameCannotBeEmpty = common.NewCustomError(nil, "first name can't be blank", "ErrFirstNameCannotBeEmpty")
-	ErrFirstNameIsTooLong           = common.NewCustomError(nil, "first name is too long", "ErrFirstNameIsTooLong") 
-	
-	ErrAvatarCannotBeEmpty    = common.NewCustomError(nil, "avatar can't be blank", "ErrAvatarCannotBeEmpty")
-	ErrBioIsTooLong           = common.NewCustomError(nil, "bio is too long", "ErrBioIsTooLong") 
+	ErrFirstNameIsTooLong     = common.NewCustomError(nil, "first name is too long", "ErrFirstNameIsTooLong")
+
+	ErrAvatarCannotBeEmpty = common.NewCustomError(nil, "avatar can't be blank", "ErrAvatarCannotBeEmpty")
+	ErrBioIsTooLong        = common.NewCustomError(nil, "bio is too long", "ErrBioIsTooLong")
 )

@@ -15,7 +15,7 @@ type GetStore interface {
 }
 
 type getBiz struct {
-	store GetStore
+	store         GetStore
 	favoriteStore FavoriteStore
 }
 

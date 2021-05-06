@@ -49,7 +49,7 @@ func (biz *uploadImageBiz) UploadImage(ctx context.Context, data []byte, folder,
 	img.Width = w
 	img.Height = h
 	img.Extension = fileExt
-	
+
 	uploadedImage := &uploadmodel.UploadedImage{}
 	uploadedImage.ImageInfo = img
 	if err := biz.imgStore.CreateImage(ctx, uploadedImage); err != nil {

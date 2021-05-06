@@ -26,11 +26,11 @@ type FavoriteStore interface {
 }
 
 type listBiz struct {
-	store ListStore
+	store         ListStore
 	favoriteStore FavoriteStore
 }
 
-func NewListBiz(store ListStore , favoriteStore FavoriteStore) *listBiz {
+func NewListBiz(store ListStore, favoriteStore FavoriteStore) *listBiz {
 	return &listBiz{store: store, favoriteStore: favoriteStore}
 }
 

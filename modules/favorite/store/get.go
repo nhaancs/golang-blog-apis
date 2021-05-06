@@ -15,7 +15,7 @@ func (s *sqlStore) Get(
 ) (*favoritemodel.Favorite, error) {
 	var result favoritemodel.Favorite
 	db := s.db
-	
+
 	for i := range moreKeys {
 		db = db.Preload(moreKeys[i])
 	}
