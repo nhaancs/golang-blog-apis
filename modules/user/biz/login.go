@@ -4,7 +4,7 @@ import (
 	"context"
 	"nhaancs/common"
 	"nhaancs/component/tokenprovider"
-	usermodel "nhaancs/modules/user/model"
+	"nhaancs/modules/user/model"
 )
 
 type LoginStorage interface {
@@ -12,7 +12,6 @@ type LoginStorage interface {
 }
 
 type loginBiz struct {
-	// appCtx        component.AppContext
 	storeUser     LoginStorage
 	tokenProvider tokenprovider.Provider
 	hasher        Hasher
@@ -33,14 +32,20 @@ func NewLoginBusiness(storeUser LoginStorage, tokenProvider tokenprovider.Provid
 // 3. Provider: issue JWT token for client
 // 3.1. Access token and refresh token
 // 4. Return token(s)
-
 func (business *loginBiz) Login(ctx context.Context, data *usermodel.UserLogin) (*tokenprovider.Token, error) {
+	if err := data.Validate(); err != nil {
+		return nil, err
+	}
+
 	user, err := business.storeUser.FindUser(ctx, map[string]interface{}{"email": data.Email})
 	if err != nil {
 		return nil, usermodel.ErrEmailOrPasswordInvalid
 	}
 
-	// todo: validate user info
+	if user.DeletedAt != nil || !user.IsEnabled {
+		panic(common.NewCustomError(nil, "user has been deleted or banned", "UserDeletedOrBanned"))
+	}
+
 	passHashed := business.hasher.Hash(data.Password + user.Salt)
 	if user.Password != passHashed {
 		return nil, usermodel.ErrEmailOrPasswordInvalid
