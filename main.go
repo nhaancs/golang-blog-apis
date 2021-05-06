@@ -52,6 +52,7 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 	v1.POST("/register", ginuser.Register(appCtx))
 	v1.POST("/login", ginuser.Login(appCtx))
 	v1.GET("/profile", middleware.RequiredAuth(appCtx), ginuser.GetProfile(appCtx))
+	// posts.GET("/liked-posts", ginfavorite.List(appCtx)) // todo: move to user
 	categories := v1.Group("/categories")
 	{
 		categories.POST("", gincategory.Create(appCtx))
@@ -67,12 +68,9 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 		posts.GET("", ginpost.List(appCtx))
 		posts.PATCH("/:id", ginpost.Update(appCtx))
 		posts.DELETE("/:id", ginpost.Delete(appCtx))
-	}
-	favorites := v1.Group("/favorites")
-	{
-		favorites.POST("", ginfavorite.Favorite(appCtx))
-		favorites.GET("", ginfavorite.List(appCtx))
-		favorites.DELETE("/:postId", ginfavorite.Unfavorite(appCtx))
+		posts.POST("/:id/favorite", ginfavorite.Favorite(appCtx))
+		posts.DELETE("/:id/unfavorite", ginfavorite.Unfavorite(appCtx))
+		posts.GET("/:id/liked-users", ginfavorite.List(appCtx))
 	}
 
 	return r.Run()

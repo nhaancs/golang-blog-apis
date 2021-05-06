@@ -3,7 +3,7 @@ package userbiz
 import (
 	"context"
 	"nhaancs/common"
-	usermodel "nhaancs/modules/user/model"
+	"nhaancs/modules/user/model"
 )
 
 type RegisterStorage interface {
@@ -28,17 +28,19 @@ func NewRegisterBusiness(registerStorage RegisterStorage, hasher Hasher) *regist
 }
 
 func (business *registerBusiness) Register(ctx context.Context, data *usermodel.UserCreate) error {
+	if err := data.Validate(); err != nil {
+		return err
+	}
+
 	user, _ := business.registerStorage.FindUser(ctx, map[string]interface{}{"email": data.Email})
 	if user != nil {
 		return usermodel.ErrEmailExisted
 	}
-	// todo: validate user info
 
 	salt := common.GenSalt(50)
 	data.Password = business.hasher.Hash(data.Password + salt)
 	data.Salt = salt
 	data.Role = "user" // hard code
-
 	if err := business.registerStorage.CreateUser(ctx, data); err != nil {
 		return common.ErrCannotCreateEntity(usermodel.EntityName, err)
 	}

@@ -37,13 +37,13 @@ func NewLoginBusiness(storeUser LoginStorage, tokenProvider tokenprovider.Provid
 func (business *loginBiz) Login(ctx context.Context, data *usermodel.UserLogin) (*tokenprovider.Token, error) {
 	user, err := business.storeUser.FindUser(ctx, map[string]interface{}{"email": data.Email})
 	if err != nil {
-		return nil, usermodel.ErrUsernameOrPasswordInvalid
+		return nil, usermodel.ErrEmailOrPasswordInvalid
 	}
 
 	// todo: validate user info
 	passHashed := business.hasher.Hash(data.Password + user.Salt)
 	if user.Password != passHashed {
-		return nil, usermodel.ErrUsernameOrPasswordInvalid
+		return nil, usermodel.ErrEmailOrPasswordInvalid
 	}
 
 	payload := tokenprovider.TokenPayload{

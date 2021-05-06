@@ -14,12 +14,14 @@ import (
 func Favorite(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data = new(favoritemodel.FavoriteCreate)
-		if err := c.ShouldBind(data); err != nil {
+		fakePostId, err := common.FromBase58(c.Param("id"))
+		if err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
-		data.Fulfill()
 		//todo: get user id
 		data.UserId = 1
+		data.FakePostId = &fakePostId
+		data.Fulfill()
 
 		// requester := c.MustGet(common.CurrentUser).(common.Requester)
 		// data.OwnerId = requester.GetUserId()

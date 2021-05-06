@@ -1,9 +1,7 @@
 package usermodel
 
 import (
-	"errors"
 	"nhaancs/common"
-	"nhaancs/component/tokenprovider"
 )
 
 const EntityName = "User"
@@ -41,56 +39,22 @@ func (u *User) Mask(isAdmin bool) {
 	u.GenUID(common.DbTypeUser)
 }
 
-type UserCreate struct {
-	common.SQLModel `json:",inline"`
-	Email           string        `json:"email" gorm:"column:email;"`
-	Password        string        `json:"password" gorm:"column:password;"`
-	LastName        string        `json:"last_name" gorm:"column:last_name;"`
-	FirstName       string        `json:"first_name" gorm:"column:first_name;"`
-	Role            string        `json:"-" gorm:"column:role;"`
-	Salt            string        `json:"-" gorm:"column:salt;"`
-	Avatar          *common.Image `json:"avatar,omitempty" gorm:"column:avatar;type:json"`
-}
-
-func (UserCreate) TableName() string {
-	return User{}.TableName()
-}
-
-func (u *UserCreate) Mask(isAdmin bool) {
-	u.GenUID(common.DbTypeUser)
-}
-
-type UserLogin struct {
-	Email    string `json:"email" form:"email" gorm:"column:email;"`
-	Password string `json:"password" form:"password" gorm:"column:password;"`
-}
-
-func (UserLogin) TableName() string {
-	return User{}.TableName()
-}
-
-type Account struct {
-	AccessToken  *tokenprovider.Token `json:"access_token"`
-	RefreshToken *tokenprovider.Token `json:"refresh_token"`
-}
-
-func NewAccount(at, rt *tokenprovider.Token) *Account {
-	return &Account{
-		AccessToken:  at,
-		RefreshToken: rt,
-	}
-}
-
 var (
-	ErrUsernameOrPasswordInvalid = common.NewCustomError(
-		errors.New("username or password invalid"),
-		"username or password invalid",
-		"ErrUsernameOrPasswordInvalid",
-	)
-
-	ErrEmailExisted = common.NewCustomError(
-		errors.New("email has already existed"),
-		"email has already existed",
-		"ErrEmailExisted",
-	)
+	ErrEmailCannotBeEmpty  = common.NewCustomError(nil, "email can't be blank", "ErrEmailCannotBeEmpty")
+	ErrEmailExisted           = common.NewCustomError(nil, "email has already existed", "ErrEmailExisted")
+	ErrInvalidEmail           = common.NewCustomError(nil, "invalid email", "ErrInvalidEmail")
+	ErrEmailIsTooLong           = common.NewCustomError(nil, "email is too long", "ErrEmailIsTooLong") 
+	ErrEmailOrPasswordInvalid = common.NewCustomError(nil, "email or password invalid", "ErrEmailOrPasswordInvalid")
+	
+	ErrInvalidPassword        = common.NewCustomError(nil, "invalid password", "ErrInvalidPassword")
+	ErrPasswordCannotBeEmpty  = common.NewCustomError(nil, "password can't be blank", "ErrPasswordCannotBeEmpty")
+	
+	ErrLastNameCannotBeEmpty  = common.NewCustomError(nil, "last name can't be blank", "ErrLastNameCannotBeEmpty")
+	ErrLastNameIsTooLong           = common.NewCustomError(nil, "last name is too long", "ErrLastNameIsTooLong") 
+	
+	ErrFirstNameCannotBeEmpty = common.NewCustomError(nil, "first name can't be blank", "ErrFirstNameCannotBeEmpty")
+	ErrFirstNameIsTooLong           = common.NewCustomError(nil, "first name is too long", "ErrFirstNameIsTooLong") 
+	
+	ErrAvatarCannotBeEmpty    = common.NewCustomError(nil, "avatar can't be blank", "ErrAvatarCannotBeEmpty")
+	ErrBioIsTooLong           = common.NewCustomError(nil, "bio is too long", "ErrBioIsTooLong") 
 )

@@ -6,8 +6,8 @@ import (
 	"nhaancs/component"
 	"nhaancs/component/hasher"
 	"nhaancs/component/tokenprovider/jwt"
-	usermodel "nhaancs/modules/user/model"
 	"nhaancs/modules/user/biz"
+	"nhaancs/modules/user/model"
 	"nhaancs/modules/user/store"
 
 	"github.com/gin-gonic/gin"

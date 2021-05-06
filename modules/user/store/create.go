@@ -3,7 +3,7 @@ package userstorage
 import (
 	"context"
 	"nhaancs/common"
-	usermodel "nhaancs/modules/user/model"
+	"nhaancs/modules/user/model"
 )
 
 func (s *sqlStore) CreateUser(ctx context.Context, data *usermodel.UserCreate) error {

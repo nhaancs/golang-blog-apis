@@ -12,7 +12,7 @@ import (
 
 func Unfavorite(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		postId, err := common.FromBase58(c.Param("postId"))
+		postId, err := common.FromBase58(c.Param("id"))
 		if err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}

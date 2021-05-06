@@ -5,8 +5,8 @@ import (
 	"nhaancs/common"
 	"nhaancs/component"
 	"nhaancs/component/hasher"
-	usermodel "nhaancs/modules/user/model"
 	"nhaancs/modules/user/biz"
+	"nhaancs/modules/user/model"
 	"nhaancs/modules/user/store"
 
 	"github.com/gin-gonic/gin"
@@ -16,7 +16,6 @@ func Register(appCtx component.AppContext) func(*gin.Context) {
 	return func(c *gin.Context) {
 		db := appCtx.GetMainDBConnection()
 		var data usermodel.UserCreate
-
 		if err := c.ShouldBind(&data); err != nil {
 			panic(err)
 		}
@@ -24,13 +23,10 @@ func Register(appCtx component.AppContext) func(*gin.Context) {
 		store := userstorage.NewSQLStore(db)
 		md5 := hasher.NewMd5Hash()
 		biz := userbiz.NewRegisterBusiness(store, md5)
-
 		if err := biz.Register(c.Request.Context(), &data); err != nil {
 			panic(err)
 		}
 
-		data.Mask(false)
-
-		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data.FakeId.String()))
+		c.JSON(http.StatusOK, common.SimpleSuccessResponse(true))
 	}
 }
