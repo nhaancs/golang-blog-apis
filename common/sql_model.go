@@ -7,8 +7,8 @@ type SQLModel struct {
 	FakeId    *UID       `json:"id" gorm:"-"`
 	IsEnabled bool       `json:"is_enabled" gorm:"column:is_enabled;"`
 	CreatedAt *time.Time `json:"created_at" gorm:"column:created_at;"`
-	UpdatedAt *time.Time `json:"updated_at" gorm:"column:updated_at;"`
-	DeletedAt *time.Time `json:"deleted_at" gorm:"column:deleted_at;"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty" gorm:"column:updated_at;"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty" gorm:"column:deleted_at;"`
 }
 type SQLCreateModel struct {
 	Id        int        `json:"-" gorm:"column:id;"`

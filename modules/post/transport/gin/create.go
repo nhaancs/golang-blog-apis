@@ -18,9 +18,8 @@ func Create(appCtx component.AppContext) gin.HandlerFunc {
 			panic(common.ErrInvalidRequest(err))
 		}
 		data.Fulfill()
-
-		// requester := c.MustGet(common.CurrentUser).(common.Requester)
-		// data.OwnerId = requester.GetUserId()
+		requester := c.MustGet(common.CurrentUser).(common.Requester)
+		data.UserId = requester.GetUserId()
 
 		store := poststore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := postbiz.NewCreateBiz(store)

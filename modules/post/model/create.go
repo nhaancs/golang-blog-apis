@@ -18,9 +18,8 @@ type PostCreate struct {
 	PublishedAt           *time.Time    `json:"published_at" gorm:"column:published_at;autoCreateTime;"`
 	Keywords              string        `json:"keywords" gorm:"column:keywords;"`
 	CategoryId            int           `json:"-" gorm:"column:category_id;"`
-	UserId                int           `json:"-" gorm:"column:user_id;"`
 	FakeCategoryId        *common.UID   `json:"category_id" gorm:"-"`
-	FakeUserId            *common.UID   `json:"-" gorm:"-"`
+	UserId                int           `json:"-" gorm:"column:user_id;"`
 }
 
 func (PostCreate) TableName() string {
@@ -30,10 +29,6 @@ func (PostCreate) TableName() string {
 func (p *PostCreate) Fulfill() {
 	if p.FakeCategoryId != nil {
 		p.CategoryId = int(p.FakeCategoryId.GetLocalID())
-	}
-
-	if p.FakeUserId != nil {
-		p.UserId = int(p.FakeUserId.GetLocalID())
 	}
 }
 

@@ -42,22 +42,23 @@ func RequiredAuth(appCtx component.AppContext) func(c *gin.Context) {
 			panic(err)
 		}
 
+		db := appCtx.GetMainDBConnection()
+		store := userstorage.NewSQLStore(db)
 		payload, err := tokenProvider.Validate(token)
 		if err != nil {
 			panic(err)
 		}
-		db := appCtx.GetMainDBConnection()
-		store := userstorage.NewSQLStore(db)
+
 		user, err := store.FindUser(c.Request.Context(), map[string]interface{}{"id": payload.UserId})
 		if err != nil {
 			panic(err)
 		}
+
 		if user.DeletedAt != nil || !user.IsEnabled {
 			panic(common.ErrNoPermission(errors.New("user has been deleted or banned")))
 		}
 
-		user.Mask(false)
-
+		user.Mask(user.Role == "admin")
 		c.Set(common.CurrentUser, user)
 		c.Next()
 	}
