@@ -18,9 +18,6 @@ func Create(appCtx component.AppContext) gin.HandlerFunc {
 			panic(common.ErrInvalidRequest(err))
 		}
 
-		// requester := c.MustGet(common.CurrentUser).(common.Requester)
-		// data.OwnerId = requester.GetUserId()
-
 		store := categorystore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := categorybiz.NewCreateBiz(store)
 		if err := biz.Create(c.Request.Context(), &data); err != nil {
