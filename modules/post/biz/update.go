@@ -3,6 +3,7 @@ package postbiz
 import (
 	"context"
 	"nhaancs/common"
+	categorymodel "nhaancs/modules/category/model"
 	"nhaancs/modules/post/model"
 )
 
@@ -21,20 +22,17 @@ type UpdateStore interface {
 
 type updateBiz struct {
 	store UpdateStore
+	categoryStore CategoryStore
 }
 
-func NewUpdateBiz(store UpdateStore) *updateBiz {
-	return &updateBiz{store: store}
+func NewUpdateBiz(store UpdateStore, categoryStore CategoryStore) *updateBiz {
+	return &updateBiz{store: store, categoryStore: categoryStore}
 }
 
 func (biz *updateBiz) Update(ctx context.Context, id int, data *postmodel.PostUpdate) error {
 	if err := data.Validate(); err != nil {
 		return err
 	}
-
-	// todo: validate category
-	// todo: validate only the author can update
-	// todo: check enable a post in a disabled category
 
 	oldData, err := biz.store.Get(ctx, map[string]interface{}{"id": id})
 	if err != nil {
@@ -48,6 +46,16 @@ func (biz *updateBiz) Update(ctx context.Context, id int, data *postmodel.PostUp
 		_, err := biz.store.Get(ctx, map[string]interface{}{"slug": data.Slug})
 		if data.Slug != oldData.Slug && err != common.ErrRecordNotFound {
 			return common.ErrEntityExisted(postmodel.EntityName, nil)
+		}
+	}
+
+	{
+		cat, err := biz.categoryStore.Get(ctx, map[string]interface{}{"id": data.CategoryId})
+		if cat == nil {
+			return common.ErrEntityNotFound(categorymodel.EntityName, err)
+		}
+		if cat.DeletedAt != nil || !cat.IsEnabled {
+			return common.ErrEntityDeleted(categorymodel.EntityName, nil)
 		}
 	}
 

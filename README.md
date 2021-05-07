@@ -1,10 +1,10 @@
 # blog
 
-todo:
-- implement repository layer (use 2 stores) 1:40:00 section 7
-- how to do sorting (orderby), searching
-- how about disable a category - how IsDisabled category effect CRUD
+todo - open hour questions:
+- implement a repository layer 1:40:00 section 7 - list restaurant biz (like count)
+- how to do sorting (orderby), searching?
 - what is ctx for?
+- how to deploy senviet with docker (db, service, portal, web) on the same instance?
 
 ## Getting started
 ```bash
