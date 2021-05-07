@@ -6,8 +6,6 @@ import (
 	"nhaancs/modules/post/model"
 )
 
-// todo: implement repository layer here (use 2 stores) 1:40:00 section 7
-
 type ListStore interface {
 	List(
 		ctx context.Context,
@@ -38,8 +36,13 @@ func (biz *listBiz) List(
 	ctx context.Context,
 	filter *postmodel.Filter,
 	paging *common.Paging,
+	isAdmin bool,
 ) ([]postmodel.Post, error) {
-	result, err := biz.store.List(ctx, nil, filter, paging)
+	conditions := map[string]interface{}{}
+	if !isAdmin {
+		conditions["is_enabled"] = true
+	}
+	result, err := biz.store.List(ctx, conditions, filter, paging)
 	if err != nil {
 		return nil, common.ErrCannotListEntity(postmodel.EntityName, err)
 	}

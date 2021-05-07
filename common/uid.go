@@ -20,7 +20,6 @@ type UID struct {
 	shardID    uint32
 }
 
-// todo: check with Viet Tran about return a pointer
 func NewUID(localID uint32, objType int, shardID uint32) *UID {
 	return &UID{
 		localID:    localID,

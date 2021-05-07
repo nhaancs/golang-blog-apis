@@ -12,7 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//todo: search posts
 func List(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var filter postmodel.Filter
@@ -30,7 +29,7 @@ func List(appCtx component.AppContext) gin.HandlerFunc {
 		store := poststore.NewSQLStore(appCtx.GetMainDBConnection())
 		favoriteStore := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := postbiz.NewListBiz(store, favoriteStore)
-		result, err := biz.List(c.Request.Context(), &filter, &paging)
+		result, err := biz.List(c.Request.Context(), &filter, &paging, common.IsRequesterAdmin(c))
 		if err != nil {
 			panic(err)
 		}
