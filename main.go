@@ -46,6 +46,7 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 	appCtx := component.NewAppContext(db, upProvider, secretKey)
 	r := gin.Default()
 	r.Use(middleware.Recover(appCtx))
+	r.Use(middleware.RequiredAuthOrNot(appCtx))
 
 	v1 := r.Group("v1")
 	v1.POST("/register", ginuser.Register(appCtx))
