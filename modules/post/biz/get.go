@@ -23,8 +23,11 @@ func NewGetBiz(store GetStore, favoriteStore FavoriteStore) *getBiz {
 	return &getBiz{store: store, favoriteStore: favoriteStore}
 }
 
-func (biz *getBiz) Get(ctx context.Context, id int) (*postmodel.Post, error) {
-	data, err := biz.store.Get(ctx, map[string]interface{}{"id": id})
+func (biz *getBiz) Get(ctx context.Context, conditions map[string]interface{}, isAdmin bool) (*postmodel.Post, error) {
+	if conditions != nil && !isAdmin {
+		conditions["is_enabled"] = true
+	}
+	data, err := biz.store.Get(ctx, conditions)
 
 	if err != nil {
 		if err != common.ErrRecordNotFound {

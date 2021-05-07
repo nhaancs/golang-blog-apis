@@ -34,6 +34,7 @@ func (biz *updateBiz) Update(ctx context.Context, id int, data *postmodel.PostUp
 
 	// todo: validate category
 	// todo: validate only the author can update
+	// todo: check enable a post in a disabled category
 
 	oldData, err := biz.store.Get(ctx, map[string]interface{}{"id": id})
 	if err != nil {

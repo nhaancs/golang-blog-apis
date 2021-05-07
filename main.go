@@ -58,7 +58,7 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 	{
 		categories.POST("", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), gincategory.Create(appCtx))
 		categories.GET("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), gincategory.Get(appCtx))
-		// todo: implement get by slug for user
+		categories.GET("/slug/:slug", gincategory.Get(appCtx))
 		categories.GET("", gincategory.List(appCtx))
 		categories.PATCH("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), gincategory.Update(appCtx))
 		categories.DELETE("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), gincategory.Delete(appCtx))
@@ -67,7 +67,7 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 	{
 		posts.POST("", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), ginpost.Create(appCtx))
 		posts.GET("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), ginpost.Get(appCtx))
-		// todo: implement get by slug for user
+		posts.GET("/slug/:slug", ginpost.Get(appCtx))
 		posts.GET("", ginpost.List(appCtx))
 		posts.PATCH("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), ginpost.Update(appCtx))
 		posts.DELETE("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), ginpost.Delete(appCtx))
