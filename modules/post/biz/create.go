@@ -24,7 +24,7 @@ type CategoryStore interface {
 }
 
 type createBiz struct {
-	store CreateStore
+	store         CreateStore
 	categoryStore CategoryStore
 }
 

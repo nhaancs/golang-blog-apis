@@ -30,7 +30,7 @@ func IsRequesterAdmin(c *gin.Context) bool {
 	requester, exists := c.Get(CurrentUser)
 	if exists {
 		return requester.(Requester).GetRole() == AdminRole
-	} 
+	}
 
 	return false
 }

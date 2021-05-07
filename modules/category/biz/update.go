@@ -54,6 +54,6 @@ func (biz *updateBiz) Update(ctx context.Context, id int, data *categorymodel.Ca
 	if data.IsEnabled != nil && !*data.IsEnabled {
 		// todo: create a cron job to disable all posts in this category
 	}
-	
+
 	return nil
 }

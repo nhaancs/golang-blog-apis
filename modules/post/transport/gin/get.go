@@ -29,7 +29,6 @@ func Get(appCtx component.AppContext) gin.HandlerFunc {
 			panic(common.ErrInvalidRequest(nil))
 		}
 
-
 		store := poststore.NewSQLStore(appCtx.GetMainDBConnection())
 		favoriteStore := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := postbiz.NewGetBiz(store, favoriteStore)

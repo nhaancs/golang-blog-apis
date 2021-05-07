@@ -18,7 +18,7 @@ type SQLCreateModel struct {
 }
 type SQLUpdateModel struct {
 	UpdatedAt *time.Time `json:"updated_at" gorm:"column:updated_at;autoUpdateTime;"`
-	IsEnabled *bool       `json:"is_enabled,omitempty" gorm:"column:is_enabled;"`
+	IsEnabled *bool      `json:"is_enabled,omitempty" gorm:"column:is_enabled;"`
 }
 
 func (m *SQLModel) GenUID(dbType int) {
