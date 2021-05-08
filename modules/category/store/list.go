@@ -15,10 +15,6 @@ func (s *sqlStore) List(ctx context.Context,
 	var result []categorymodel.Category
 	db := s.db
 
-	for i := range moreKeys {
-		db = db.Preload(moreKeys[i])
-	}
-
 	db = db.Table(categorymodel.Category{}.TableName()).
 		Where(conditions).
 		Where("deleted_at IS NULL")
@@ -31,6 +27,10 @@ func (s *sqlStore) List(ctx context.Context,
 
 	if err := db.Count(&paging.Total).Error; err != nil {
 		return nil, common.ErrDB(err)
+	}
+
+	for i := range moreKeys {
+		db = db.Preload(moreKeys[i])
 	}
 
 	if v := paging.FakeCursor; v != "" {
