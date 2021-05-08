@@ -2,6 +2,8 @@ package postmodel
 
 import (
 	"nhaancs/common"
+	categorymodel "nhaancs/modules/category/model"
+	usermodel "nhaancs/modules/user/model"
 	"time"
 )
 
@@ -9,25 +11,23 @@ const EntityName = "Post"
 
 type Post struct {
 	common.SQLModel `json:",inline"`
-	Title           string        `json:"title" gorm:"column:title;"`
-	Slug            string        `json:"slug" gorm:"column:slug;"`
-	ShortDesc       string        `json:"short_desc" gorm:"column:short_desc;"`
-	Body            string        `json:"body" gorm:"column:body;"`
-	Image           *common.Image `json:"image" gorm:"column:image;"`
-	PublishedAt     *time.Time    `json:"published_at" gorm:"column:published_at;"`
-	Keywords        string        `json:"keywords" gorm:"column:keywords;"`
-	CategoryId      int           `json:"-" gorm:"column:category_id;"`
-	UserId          int           `json:"-" gorm:"column:user_id;"`
-	FakeCategoryId  *common.UID   `json:"category_id" gorm:"-"` // todo: dont need show fake id here, only mart sub object
-	FakeUserId      *common.UID   `json:"user_id" gorm:"-"`     // todo: dont need show fake id here, only mart sub object, use common.SimpleUser
-	FavoriteCount   int           `json:"favorite_count" gorm:"-"`
+	Title           string                  `json:"title" gorm:"column:title;"`
+	Slug            string                  `json:"slug" gorm:"column:slug;"`
+	ShortDesc       string                  `json:"short_desc" gorm:"column:short_desc;"`
+	Body            string                  `json:"body" gorm:"column:body;"`
+	Image           *common.Image           `json:"image" gorm:"column:image;"`
+	PublishedAt     *time.Time              `json:"published_at" gorm:"column:published_at;"`
+	Keywords        string                  `json:"keywords" gorm:"column:keywords;"`
+	CategoryId      int                     `json:"-" gorm:"column:category_id;"`
+	UserId          int                     `json:"-" gorm:"column:user_id;"`
+	Category        *categorymodel.Category `json:"category" gorm:"column:preload:false;"`
+	User            *usermodel.User         `json:"user" gorm:"column:preload:false;"`
+	FavoriteCount   int                     `json:"favorite_count" gorm:"-"`
 }
 
 // We can get role info from common.Requester
 func (data *Post) Mask(isAdmin bool) {
 	data.GenUID(common.DbTypePost)
-	data.FakeCategoryId = common.NewUID(uint32(data.CategoryId), common.DbTypeCategory, 1)
-	data.FakeUserId = common.NewUID(uint32(data.UserId), common.DbTypeUser, 1)
 }
 
 func (Post) TableName() string {
@@ -48,6 +48,4 @@ var (
 	ErrPostPublishAtCannotBeEmpty = common.NewCustomError(nil, "Published date can't be blank", "ErrPostPublishAtCannotBeEmpty")
 	ErrPostImageCannotBeEmpty     = common.NewCustomError(nil, "Image can't be blank", "ErrPostImageCannotBeEmpty")
 	ErrPostCategoryCannotBeEmpty  = common.NewCustomError(nil, "category can't be blank", "ErrPostCategoryCannotBeEmpty")
-	// ErrPostCategoryIsInvalid      = common.NewCustomError(nil, "category is invalid", "ErrPostCategoryIsInvalid")
-	// ErrPostAuthorIsInvalid        = common.NewCustomError(nil, "post author is invalid", "ErrPostAuthorIsInvalid")
 )

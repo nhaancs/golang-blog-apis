@@ -42,7 +42,7 @@ func (biz *listBiz) List(
 	if !isAdmin {
 		conditions["is_enabled"] = true
 	}
-	result, err := biz.store.List(ctx, conditions, filter, paging)
+	result, err := biz.store.List(ctx, conditions, filter, paging, "User", "Category")
 	if err != nil {
 		return nil, common.ErrCannotListEntity(postmodel.EntityName, err)
 	}

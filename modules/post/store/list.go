@@ -16,10 +16,6 @@ func (s *sqlStore) List(
 	var result []postmodel.Post
 	db := s.db
 
-	for i := range moreKeys {
-		db = db.Preload(moreKeys[i])
-	}
-
 	db = db.Table(postmodel.Post{}.TableName()).
 		Where(conditions).
 		Where("deleted_at IS NULL")
@@ -35,6 +31,11 @@ func (s *sqlStore) List(
 
 	if err := db.Count(&paging.Total).Error; err != nil {
 		return nil, common.ErrDB(err)
+	}
+
+	// can customize for each key here
+	for i := range moreKeys {
+		db = db.Preload(moreKeys[i])
 	}
 
 	if v := paging.FakeCursor; v != "" {
