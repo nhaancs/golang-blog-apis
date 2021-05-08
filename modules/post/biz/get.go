@@ -27,7 +27,7 @@ func (biz *getBiz) Get(ctx context.Context, conditions map[string]interface{}, i
 	if conditions != nil && !isAdmin {
 		conditions["is_enabled"] = true
 	}
-	data, err := biz.store.Get(ctx, conditions)
+	data, err := biz.store.Get(ctx, conditions, "User", "Category")
 
 	if err != nil {
 		if err != common.ErrRecordNotFound {
