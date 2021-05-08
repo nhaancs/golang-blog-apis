@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"nhaancs/common"
 	"nhaancs/component"
+	categorystore "nhaancs/modules/category/store"
 	"nhaancs/modules/post/biz"
 	"nhaancs/modules/post/model"
 	"nhaancs/modules/post/store"
@@ -25,7 +26,8 @@ func Update(appCtx component.AppContext) gin.HandlerFunc {
 		data.Fulfill()
 
 		store := poststore.NewSQLStore(appCtx.GetMainDBConnection())
-		biz := postbiz.NewUpdateBiz(store)
+		categoryStore := categorystore.NewSQLStore(appCtx.GetMainDBConnection())
+		biz := postbiz.NewUpdateBiz(store, categoryStore)
 		if err := biz.Update(c.Request.Context(), int(uid.GetLocalID()), data); err != nil {
 			panic(err)
 		}
