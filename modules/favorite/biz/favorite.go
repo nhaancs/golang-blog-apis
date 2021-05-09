@@ -2,9 +2,9 @@ package favoritebiz
 
 import (
 	"context"
-	"fmt"
 	"nhaancs/common"
 	favoritemodel "nhaancs/modules/favorite/model"
+	postmodel "nhaancs/modules/post/model"
 )
 
 type FavoriteStore interface {
@@ -16,12 +16,21 @@ type FavoriteStore interface {
 	) (*favoritemodel.Favorite, error)
 }
 
-type favoriteBiz struct {
-	store FavoriteStore
+type GetPostStore interface {
+	Get(
+		ctx context.Context,
+		conditions map[string]interface{},
+		moreKeys ...string,
+	) (*postmodel.Post, error)
 }
 
-func NewFavoriteBiz(store FavoriteStore) *favoriteBiz {
-	return &favoriteBiz{store: store}
+type favoriteBiz struct {
+	store FavoriteStore
+	getPostStore GetPostStore
+}
+
+func NewFavoriteBiz(store FavoriteStore, getPostStore GetPostStore) *favoriteBiz {
+	return &favoriteBiz{store: store, getPostStore: getPostStore}
 }
 
 func (biz *favoriteBiz) Favorite(ctx context.Context, data *favoritemodel.FavoriteCreate) error {
@@ -29,14 +38,19 @@ func (biz *favoriteBiz) Favorite(ctx context.Context, data *favoritemodel.Favori
 		return err
 	}
 
-	//todo: get a post to check(exist, not deleted)
 	{
 		_, err := biz.store.Get(ctx, map[string]interface{}{"user_id": data.UserId, "post_id": data.PostId})
 		if err != common.ErrRecordNotFound {
 			return nil
 		}
 	}
-	fmt.Println("data: ", data)
+	
+	{
+		post, err := biz.getPostStore.Get(ctx, map[string]interface{}{"id": data.PostId})
+		if err != nil || !post.IsEnabled || post.DeletedAt != nil {
+			return nil
+		}
+	}
 
 	if err := biz.store.Create(ctx, data); err != nil {
 		return common.ErrCannotCreateEntity(favoritemodel.EntityName, err)

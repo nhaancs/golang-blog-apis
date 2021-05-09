@@ -7,6 +7,7 @@ import (
 	favoritebiz "nhaancs/modules/favorite/biz"
 	favoritemodel "nhaancs/modules/favorite/model"
 	favoritestore "nhaancs/modules/favorite/store"
+	poststore "nhaancs/modules/post/store"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +24,8 @@ func Favorite(appCtx component.AppContext) gin.HandlerFunc {
 		data.PostId = int(fakePostId.GetLocalID())
 
 		store := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
-		biz := favoritebiz.NewFavoriteBiz(store)
+		postStore := poststore.NewSQLStore(appCtx.GetMainDBConnection())
+		biz := favoritebiz.NewFavoriteBiz(store, postStore)
 		if err := biz.Favorite(c.Request.Context(), data); err != nil {
 			panic(err)
 		}
