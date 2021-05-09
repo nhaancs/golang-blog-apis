@@ -10,20 +10,20 @@ const EntityName = "Post"
 
 type Post struct {
 	common.SQLModel `json:",inline"`
-	Title           string                  `json:"title" gorm:"column:title;"`
-	Slug            string                  `json:"slug" gorm:"column:slug;"`
-	ShortDesc       string                  `json:"short_desc" gorm:"column:short_desc;"`
-	Body            string                  `json:"body" gorm:"column:body;"`
-	Image           *common.Image           `json:"image" gorm:"column:image;"`
-	PublishedAt     *time.Time              `json:"published_at" gorm:"column:published_at;"`
-	Keywords        string                  `json:"keywords" gorm:"column:keywords;"`
-	CategoryId      int                     `json:"-" gorm:"column:category_id;"`
-	UserId          int                     `json:"-" gorm:"column:user_id;"`
+	Title           string        `json:"title" gorm:"column:title;"`
+	Slug            string        `json:"slug" gorm:"column:slug;"`
+	ShortDesc       string        `json:"short_desc" gorm:"column:short_desc;"`
+	Body            string        `json:"body" gorm:"column:body;"`
+	Image           *common.Image `json:"image" gorm:"column:image;"`
+	PublishedAt     *time.Time    `json:"published_at" gorm:"column:published_at;"`
+	Keywords        string        `json:"keywords" gorm:"column:keywords;"`
+	CategoryId      int           `json:"-" gorm:"column:category_id;"`
+	UserId          int           `json:"-" gorm:"column:user_id;"`
 	// Note: If you don't want to use preload or in microservice, user or category may run on its own service,
 	// we need to add a new layer call repository to get user and category info for us.
-	Category        *categorymodel.Category `json:"category" gorm:"column:preload:false;"`
-	User            *common.SimpleUser      `json:"user" gorm:"column:preload:false;"`
-	FavoriteCount   int                     `json:"favorite_count" gorm:"-"`
+	Category      *categorymodel.Category `json:"category" gorm:"column:preload:false;"`
+	User          *common.SimpleUser      `json:"user" gorm:"column:preload:false;"`
+	FavoriteCount int                     `json:"favorite_count" gorm:"-"`
 }
 
 // We can get role info from common.Requester

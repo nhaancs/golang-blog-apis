@@ -21,7 +21,7 @@ type UpdateStore interface {
 }
 
 type updateBiz struct {
-	store UpdateStore
+	store         UpdateStore
 	categoryStore CategoryStore
 }
 

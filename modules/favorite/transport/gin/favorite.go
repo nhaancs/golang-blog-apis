@@ -18,13 +18,9 @@ func Favorite(appCtx component.AppContext) gin.HandlerFunc {
 		if err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
-		//todo: get user id
-		data.UserId = 1
-		data.FakePostId = &fakePostId
-		data.Fulfill()
-
-		// requester := c.MustGet(common.CurrentUser).(common.Requester)
-		// data.OwnerId = requester.GetUserId()
+		requester := c.MustGet(common.CurrentUser).(common.Requester)
+		data.UserId = requester.GetUserId()
+		data.PostId = int(fakePostId.GetLocalID())
 
 		store := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := favoritebiz.NewFavoriteBiz(store)

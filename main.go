@@ -79,7 +79,6 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 	return r.Run()
 }
 
-
 /*
 todo:
 - A có thể implement mẫu một repository đc ko. Ví dụ như trong phần list restaurant biz có phần mapping like count cho từng nhà hàng, a nói có thể làm trong repository nhưng e  chưa hiểu lắm ạ?
@@ -107,7 +106,7 @@ Tất cả đc chứa trong cùng một monorepo, giờ e muốn deploy tất c�
 
 - A phân tích giúp e một số JD:
     + https://itviec.com/it-jobs/middle-senior-backend-golang-python-shopee-5946
-    + https://itviec.com/it-jobs/mid-senior-backend-java-python-go-tiki-corporation-1625 
+    + https://itviec.com/it-jobs/mid-senior-backend-java-python-go-tiki-corporation-1625
     + https://itviec.com/it-jobs/backend-developer-golang-python-java-grab-vietnam-ltd-3331
     + https://itviec.com/it-jobs/backend-developer-golang-nodejs-sendo-vn-3747
 

@@ -2,6 +2,7 @@ package favoritebiz
 
 import (
 	"context"
+	"fmt"
 	"nhaancs/common"
 	favoritemodel "nhaancs/modules/favorite/model"
 )
@@ -35,6 +36,7 @@ func (biz *favoriteBiz) Favorite(ctx context.Context, data *favoritemodel.Favori
 			return nil
 		}
 	}
+	fmt.Println("data: ", data)
 
 	if err := biz.store.Create(ctx, data); err != nil {
 		return common.ErrCannotCreateEntity(favoritemodel.EntityName, err)
