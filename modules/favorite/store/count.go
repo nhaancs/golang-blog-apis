@@ -6,8 +6,6 @@ import (
 	favoritemodel "nhaancs/modules/favorite/model"
 )
 
-// const timeLayout = "2006-01-02T15:04:05.999999"
-
 func (s *sqlStore) GetFavoriteCountsOfPosts(
 	ctx context.Context,
 	postIds []int,

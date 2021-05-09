@@ -6,6 +6,8 @@ import (
 	favoritemodel "nhaancs/modules/favorite/model"
 )
 
+// const timeLayout = "2006-01-02T15:04:05.999999"
+
 func (s *sqlStore) List(ctx context.Context,
 	conditions map[string]interface{},
 	filter *favoritemodel.Filter,
@@ -14,7 +16,6 @@ func (s *sqlStore) List(ctx context.Context,
 ) ([]favoritemodel.Favorite, error) {
 	var result []favoritemodel.Favorite
 	db := s.db
-
 	db = db.Table(favoritemodel.Favorite{}.TableName()).
 		Where(conditions)
 

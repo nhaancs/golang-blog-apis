@@ -28,7 +28,7 @@ func (biz *listBiz) List(
 	filter *favoritemodel.Filter,
 	paging *common.Paging,
 ) ([]favoritemodel.Favorite, error) {
-	result, err := biz.store.List(ctx, nil, filter, paging)
+	result, err := biz.store.List(ctx, nil, filter, paging, "User", "Post")
 	if err != nil {
 		return nil, common.ErrCannotListEntity(favoritemodel.EntityName, err)
 	}
