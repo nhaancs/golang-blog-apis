@@ -23,15 +23,22 @@ func NewListBiz(store ListStore) *listBiz {
 	return &listBiz{store: store}
 }
 
-func (biz *listBiz) List(
+func (biz *listBiz) ListFavoritedUsers(
 	ctx context.Context,
 	filter *favoritemodel.Filter,
 	paging *common.Paging,
-) ([]favoritemodel.Favorite, error) {
-	result, err := biz.store.List(ctx, nil, filter, paging, "User", "Post")
+) ([]*common.SimpleUser, error) {
+	result, err := biz.store.List(ctx, nil, filter, paging, "User")
 	if err != nil {
 		return nil, common.ErrCannotListEntity(favoritemodel.EntityName, err)
 	}
 
-	return result, nil
+	users := make([]*common.SimpleUser, len(result))
+	for i, item := range result {
+		users[i] = item.User
+		users[i].CreatedAt = item.CreatedAt
+		users[i].UpdatedAt = nil
+	}
+
+	return users, nil
 }

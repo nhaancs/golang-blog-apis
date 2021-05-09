@@ -2,11 +2,15 @@ package favoritestore
 
 import (
 	"context"
+	"fmt"
 	"nhaancs/common"
 	favoritemodel "nhaancs/modules/favorite/model"
+	"time"
+
+	"github.com/btcsuite/btcutil/base58"
 )
 
-// const timeLayout = "2006-01-02T15:04:05.999999"
+const timeLayout = "2006-01-02T15:04:05.999999"
 
 func (s *sqlStore) List(ctx context.Context,
 	conditions map[string]interface{},
@@ -37,9 +41,12 @@ func (s *sqlStore) List(ctx context.Context,
 	}
 
 	if v := paging.FakeCursor; v != "" {
-		if uid, err := common.FromBase58(v); err == nil {
-			db = db.Where("id < ?", uid.GetLocalID())
+		timeCreated, err := time.Parse(timeLayout, string(base58.Decode(v)))
+		if err != nil {
+			return nil, common.ErrDB(err)
 		}
+
+		db = db.Where("created_at < ?", timeCreated.Format("2006-01-02 15:04:05"))
 	} else {
 		db = db.Offset((paging.Page - 1) * paging.Limit)
 	}
@@ -49,6 +56,13 @@ func (s *sqlStore) List(ctx context.Context,
 		Order("created_at desc").
 		Find(&result).Error; err != nil {
 		return nil, common.ErrDB(err)
+	}
+
+	for i, item := range result {
+		if i == len(result)-1 {
+			cursorStr := base58.Encode([]byte(fmt.Sprintf("%v", item.CreatedAt.Format(timeLayout))))
+			paging.NextCursor = cursorStr
+		}
 	}
 
 	return result, nil
