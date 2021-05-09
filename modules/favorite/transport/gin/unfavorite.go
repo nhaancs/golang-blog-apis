@@ -17,8 +17,8 @@ func Unfavorite(appCtx component.AppContext) gin.HandlerFunc {
 			panic(common.ErrInvalidRequest(err))
 		}
 
-		// todo: get user id
-		userId := 1
+		requester := c.MustGet(common.CurrentUser).(common.Requester)
+		userId := requester.GetUserId()
 		store := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := favoritebiz.NewUnfavoriteBiz(store)
 		if err := biz.Unfavorite(c.Request.Context(), userId, int(postId.GetLocalID())); err != nil {
