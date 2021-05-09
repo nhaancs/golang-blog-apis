@@ -52,7 +52,7 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 	v1.POST("/register", ginuser.Register(appCtx))
 	v1.POST("/login", ginuser.Login(appCtx))
 	v1.GET("/profile", middleware.RequiredAuth(appCtx), ginuser.GetProfile(appCtx))
-	// v1.GET("/liked-posts", middleware.RequiredAuth(appCtx), middleware.RequiredUser(appCtx), ginfavorite.List(appCtx)) // todo: implement
+	// v1.GET("/favorited-posts", middleware.RequiredAuth(appCtx), ginfavorite.List(appCtx)) // todo: implement
 	v1.POST("/upload-image", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), ginupload.UploadImage(appCtx))
 	categories := v1.Group("/categories")
 	{
@@ -73,7 +73,7 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 		posts.DELETE("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), ginpost.Delete(appCtx))
 		posts.POST("/:id/favorite", middleware.RequiredAuth(appCtx), middleware.RequiredUser(appCtx), ginfavorite.Favorite(appCtx))
 		posts.DELETE("/:id/unfavorite", middleware.RequiredAuth(appCtx), middleware.RequiredUser(appCtx), ginfavorite.Unfavorite(appCtx))
-		// posts.GET("/:id/liked-users", middleware.RequiredAuth(appCtx), middleware.RequiredUser(appCtx), ginfavorite.List(appCtx)) // todo: implement
+		posts.GET("/:id/favorited-users", middleware.RequiredAuth(appCtx), ginfavorite.List(appCtx))
 	}
 
 	return r.Run()
