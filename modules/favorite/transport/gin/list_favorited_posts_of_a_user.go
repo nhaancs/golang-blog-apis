@@ -11,13 +11,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ListFavoritedUsers(appCtx component.AppContext) gin.HandlerFunc {
+func ListFavoritedPostsOfAUser(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var filter favoritemodel.Filter
-		if err := c.ShouldBind(&filter); err != nil {
-			panic(common.ErrInvalidRequest(err))
-		}
-		filter.Fulfill()
+		requester := c.MustGet(common.CurrentUser).(common.Requester)
+		filter.UserId = requester.GetUserId()
 
 		var paging common.Paging
 		if err := c.ShouldBind(&paging); err != nil {
@@ -26,8 +24,8 @@ func ListFavoritedUsers(appCtx component.AppContext) gin.HandlerFunc {
 		paging.Fulfill()
 
 		store := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
-		biz := favoritebiz.NewListBiz(store)
-		result, err := biz.ListFavoritedUsers(c.Request.Context(), &filter, &paging)
+		biz := favoritebiz.NewListFavoritedPostsOfAUserBiz(store)
+		result, err := biz.ListFavoritedPostsOfAUser(c.Request.Context(), &filter, &paging)
 		if err != nil {
 			panic(err)
 		}

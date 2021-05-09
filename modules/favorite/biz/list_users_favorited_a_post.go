@@ -15,15 +15,15 @@ type ListStore interface {
 	) ([]favoritemodel.Favorite, error)
 }
 
-type listBiz struct {
+type listUsersFavoritedAPostBiz struct {
 	store ListStore
 }
 
-func NewListBiz(store ListStore) *listBiz {
-	return &listBiz{store: store}
+func NewListUsersFavoritedAPostBiz(store ListStore) *listUsersFavoritedAPostBiz {
+	return &listUsersFavoritedAPostBiz{store: store}
 }
 
-func (biz *listBiz) ListFavoritedUsers(
+func (biz *listUsersFavoritedAPostBiz) ListUsersFavoritedAPost(
 	ctx context.Context,
 	filter *favoritemodel.Filter,
 	paging *common.Paging,

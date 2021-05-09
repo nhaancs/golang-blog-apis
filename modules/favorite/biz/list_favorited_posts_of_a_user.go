@@ -7,19 +7,20 @@ import (
 	postmodel "nhaancs/modules/post/model"
 )
 
-type listFavoritedPosts struct {
+type listFavoritedPostsOfAUserBiz struct {
 	store ListStore
 }
 
-func NewListFavoritedPostsBiz(store ListStore) *listFavoritedPosts {
-	return &listFavoritedPosts{store: store}
+func NewListFavoritedPostsOfAUserBiz(store ListStore) *listFavoritedPostsOfAUserBiz {
+	return &listFavoritedPostsOfAUserBiz{store: store}
 }
 
-func (biz *listFavoritedPosts) ListFavoritedPosts(
+func (biz *listFavoritedPostsOfAUserBiz) ListFavoritedPostsOfAUser(
 	ctx context.Context,
 	filter *favoritemodel.Filter,
 	paging *common.Paging,
 ) ([]*postmodel.Post, error) {
+	// result, err := biz.store.List(ctx, nil, filter, paging, "Post.Category", "Post.User")
 	result, err := biz.store.List(ctx, nil, filter, paging, "Post")
 	if err != nil {
 		return nil, common.ErrCannotListEntity(favoritemodel.EntityName, err)
