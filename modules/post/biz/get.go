@@ -2,48 +2,28 @@ package postbiz
 
 import (
 	"context"
-	"nhaancs/common"
-	"nhaancs/modules/post/model"
+	postmodel "nhaancs/modules/post/model"
 )
 
-type GetStore interface {
-	Get(
-		ctx context.Context,
-		conditions map[string]interface{},
-		moreKeys ...string,
-	) (*postmodel.Post, error)
+type GetRepo interface {
+	Get(ctx context.Context, conditions map[string]interface{}, isAdmin bool) (*postmodel.Post, error)
 }
 
 type getBiz struct {
-	store         GetStore
-	favoriteStore FavoriteStore
+	repo GetRepo
 }
 
-func NewGetBiz(store GetStore, favoriteStore FavoriteStore) *getBiz {
-	return &getBiz{store: store, favoriteStore: favoriteStore}
+func NewGetBiz(repo GetRepo) *getBiz {
+	return &getBiz{repo: repo}
 }
 
 func (biz *getBiz) Get(ctx context.Context, conditions map[string]interface{}, isAdmin bool) (*postmodel.Post, error) {
 	if conditions != nil && !isAdmin {
 		conditions["is_enabled"] = true
 	}
-	data, err := biz.store.Get(ctx, conditions, "User", "Category")
-
+	data, err := biz.repo.Get(ctx, conditions, isAdmin)
 	if err != nil {
-		if err != common.ErrRecordNotFound {
-			return nil, common.ErrCannotGetEntity(postmodel.EntityName, err)
-		}
-
-		return nil, common.ErrCannotGetEntity(postmodel.EntityName, err)
-	}
-	if data.DeletedAt != nil {
-		return nil, common.ErrEntityDeleted(postmodel.EntityName, nil)
-	}
-
-	ids := []int{data.Id}
-	postFavoriteMap, _ := biz.favoriteStore.GetFavoriteCountsOfPosts(ctx, ids) // ignore error
-	if v := postFavoriteMap; v != nil {
-		data.FavoriteCount = postFavoriteMap[data.Id]
+		return nil, err
 	}
 
 	return data, nil

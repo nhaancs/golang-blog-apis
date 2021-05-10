@@ -25,7 +25,7 @@ type GetPostStore interface {
 }
 
 type favoriteBiz struct {
-	store FavoriteStore
+	store        FavoriteStore
 	getPostStore GetPostStore
 }
 
@@ -44,7 +44,7 @@ func (biz *favoriteBiz) Favorite(ctx context.Context, data *favoritemodel.Favori
 			return nil
 		}
 	}
-	
+
 	{
 		post, err := biz.getPostStore.Get(ctx, map[string]interface{}{"id": data.PostId})
 		if err != nil || !post.IsEnabled || post.DeletedAt != nil {

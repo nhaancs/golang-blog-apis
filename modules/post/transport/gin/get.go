@@ -6,6 +6,7 @@ import (
 	"nhaancs/component"
 	favoritestore "nhaancs/modules/favorite/store"
 	"nhaancs/modules/post/biz"
+	"nhaancs/modules/post/repo"
 	"nhaancs/modules/post/store"
 
 	"github.com/gin-gonic/gin"
@@ -31,7 +32,8 @@ func Get(appCtx component.AppContext) gin.HandlerFunc {
 
 		store := poststore.NewSQLStore(appCtx.GetMainDBConnection())
 		favoriteStore := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
-		biz := postbiz.NewGetBiz(store, favoriteStore)
+		repo := postrepo.NewGetRepo(store, favoriteStore)
+		biz := postbiz.NewGetBiz(repo)
 		data, err := biz.Get(c.Request.Context(), conditions, common.IsRequesterAdmin(c))
 		if err != nil {
 			panic(err)

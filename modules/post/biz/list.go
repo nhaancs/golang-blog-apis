@@ -6,7 +6,7 @@ import (
 	"nhaancs/modules/post/model"
 )
 
-type ListStore interface {
+type ListRepo interface {
 	List(
 		ctx context.Context,
 		conditions map[string]interface{},
@@ -16,20 +16,12 @@ type ListStore interface {
 	) ([]postmodel.Post, error)
 }
 
-type FavoriteStore interface {
-	GetFavoriteCountsOfPosts(
-		ctx context.Context,
-		postIds []int,
-	) (map[int]int, error)
-}
-
 type listBiz struct {
-	store         ListStore
-	favoriteStore FavoriteStore
+	repo ListRepo
 }
 
-func NewListBiz(store ListStore, favoriteStore FavoriteStore) *listBiz {
-	return &listBiz{store: store, favoriteStore: favoriteStore}
+func NewListBiz(repo ListRepo) *listBiz {
+	return &listBiz{repo: repo}
 }
 
 func (biz *listBiz) List(
@@ -42,21 +34,9 @@ func (biz *listBiz) List(
 	if !isAdmin {
 		conditions["is_enabled"] = true
 	}
-	result, err := biz.store.List(ctx, conditions, filter, paging, "User", "Category")
+	result, err := biz.repo.List(ctx, conditions, filter, paging, "User", "Category")
 	if err != nil {
-		return nil, common.ErrCannotListEntity(postmodel.EntityName, err)
+		return nil, err
 	}
-
-	ids := make([]int, len(result))
-	for i := range result {
-		ids[i] = result[i].Id
-	}
-	postFavoriteMap, _ := biz.favoriteStore.GetFavoriteCountsOfPosts(ctx, ids) // ignore error
-	if v := postFavoriteMap; v != nil {
-		for i := range result {
-			result[i].FavoriteCount = postFavoriteMap[result[i].Id]
-		}
-	}
-
 	return result, nil
 }
