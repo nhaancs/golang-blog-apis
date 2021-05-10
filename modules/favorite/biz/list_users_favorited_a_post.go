@@ -35,6 +35,11 @@ func (biz *listUsersFavoritedAPostBiz) ListUsersFavoritedAPost(
 
 	users := make([]*common.SimpleUser, len(result))
 	for i, item := range result {
+		// preload in gorm is actually the second query, not a join statememt,
+		// so item.User can be nil
+		if item.User == nil {
+			continue
+		}
 		users[i] = item.User
 		users[i].CreatedAt = item.CreatedAt
 		users[i].UpdatedAt = nil

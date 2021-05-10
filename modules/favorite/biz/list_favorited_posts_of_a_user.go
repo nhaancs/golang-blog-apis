@@ -28,6 +28,9 @@ func (biz *listFavoritedPostsOfAUserBiz) ListFavoritedPostsOfAUser(
 
 	posts := make([]*postmodel.Post, len(result))
 	for i, item := range result {
+		if item.Post == nil {
+			continue
+		}
 		posts[i] = item.Post
 		posts[i].CreatedAt = item.CreatedAt
 		posts[i].UpdatedAt = nil
