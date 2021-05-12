@@ -81,36 +81,10 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 
 /*
 todo:
-- A có thể implement mẫu một repository đc ko. Ví dụ như trong phần list restaurant biz có phần mapping like count cho từng nhà hàng, a nói có thể làm trong repository nhưng e  chưa hiểu lắm ạ?
-
-- Mình implement searching và sorting như thế nào v a?
-
-- E thấy trong code có biến ctx chưa dùng tới, tác dụng của nó là gì v a?
-
-- E có một project bao gồm:
-    + Web  : https://domain.com - server-side rendering
-    + Portal: https://admin.commain.com - client-side rendering
-    + API    : https://api.domain.com
-    + DB     : mysql
-Tất cả đc chứa trong cùng một monorepo, giờ e muốn deploy tất cả  lên 1 instance của amazon bằng docker thì phải làm sao a? E có thể viết dockerfile để chạy từng phần riêng lẻ dưới local đc, nhưng phần https với config domain thì e ko biết ạ. Repository của e là https://github.com/nhaancs/ecommerce-nx-nestjs-angular
-
-- Server nên trả về cho client JSON có key dạng snack_case hay camelCase vậy a?
-
-- Anh thấy thư viện https://github.com/kyleconroy/sqlc như thế nào ạ?
-
-- Nếu ko dùng GORM thì thay thế bằng sqlx (xử lý nhanh) và query builder https://github.com/Masterminds/squirrel (đỡ phải gõ query, hạn chế lỗi typing) thì có ổn ko a?
-
-- E thấy client khi gọi api hay bị lỗi CORS, và sever thường phải disable nó đi. Vậy CORS ở đây có tác dụng gì v a, tắt đi thì có sao k?
-
-- Để làm một ứng dụng high traffic thì cần lưu ý những gì, thường thì mình sẽ cần phải optimize ở những phần nào v a?
-
-- A phân tích giúp e một số JD:
-    + https://itviec.com/it-jobs/middle-senior-backend-golang-python-shopee-5946
-    + https://itviec.com/it-jobs/mid-senior-backend-java-python-go-tiki-corporation-1625
-    + https://itviec.com/it-jobs/backend-developer-golang-python-java-grab-vietnam-ltd-3331
-    + https://itviec.com/it-jobs/backend-developer-golang-nodejs-sendo-vn-3747
-
-- Qui trình phỏng vấn Golang của các cty ở VN thường sẽ như thế nào vậy a?
-
-- A review giúp e CV này ạ https://nhaancs.github.io
+- Apply pubsub for likecount
+- Custom error for each module that can hold root error
+- Check like, unlike apis
+- Research join 2 bang post va favorite de update favoritecount bang 1 cau query
+- redo asyncjob 
+- redo workerpool
 */
