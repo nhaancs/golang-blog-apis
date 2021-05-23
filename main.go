@@ -81,10 +81,11 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 
 /*
 todo:
-- Apply pubsub for likecount
-- Custom error for each module that can hold root error
-- Check like, unlike apis
+- Comments module
+
+
 - Research join 2 bang post va favorite de update favoritecount bang 1 cau query
-- redo asyncjob 
+- redo asyncjob
 - redo workerpool
+- redo pubsub
 */

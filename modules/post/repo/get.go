@@ -14,6 +14,13 @@ type GetStore interface {
 	) (*postmodel.Post, error)
 }
 
+type FavoriteStore interface {
+	GetFavoriteCountsOfPosts(
+		ctx context.Context,
+		postIds []int,
+	) (map[int]int, error)
+}
+
 type getRepo struct {
 	store         GetStore
 	favoriteStore FavoriteStore
