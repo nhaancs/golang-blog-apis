@@ -41,14 +41,14 @@ func (biz *favoriteBiz) Favorite(ctx context.Context, data *favoritemodel.Favori
 	{
 		_, err := biz.store.Get(ctx, map[string]interface{}{"user_id": data.UserId, "post_id": data.PostId})
 		if err != common.ErrRecordNotFound {
-			return nil
+			return favoritemodel.ErrFavoriteAPostTwice
 		}
 	}
 
 	{
 		post, err := biz.getPostStore.Get(ctx, map[string]interface{}{"id": data.PostId})
 		if err != nil || !post.IsEnabled || post.DeletedAt != nil {
-			return nil
+			return favoritemodel.ErrFavoritePostIsInvalid(err)
 		}
 	}
 

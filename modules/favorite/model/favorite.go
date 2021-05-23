@@ -31,6 +31,12 @@ func (data *Favorite) Mask(isAdmin bool) {
 }
 
 var (
+	// use error variables when you do not have a root error
 	ErrFavoritePostIsMissing = common.NewCustomError(nil, "missing post", "ErrFavoritePostIsMissing")
-	ErrFavoritePostIsInvalid = common.NewCustomError(nil, "invalid post", "ErrFavoritePostIsInvalid")
+	ErrFavoriteAPostTwice = common.NewCustomError(nil, "you favorited this post", "ErrFavoriteAPostTwice")
 )
+
+// use error function when you want to capture the root error
+func ErrFavoritePostIsInvalid(err error) *common.AppError {
+	return common.NewCustomError(err, "invalid post", "ErrFavoritePostIsInvalid")
+}
