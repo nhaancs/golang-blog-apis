@@ -3,6 +3,7 @@ package favoritebiz
 import (
 	"context"
 	"nhaancs/common"
+	"nhaancs/component/asyncjob"
 	favoritemodel "nhaancs/modules/favorite/model"
 	postmodel "nhaancs/modules/post/model"
 )
@@ -61,10 +62,13 @@ func (biz *favoriteBiz) Favorite(ctx context.Context, data *favoritemodel.Favori
 		return common.ErrCannotCreateEntity(favoritemodel.EntityName, err)
 	}
 
+	// side effect
 	go func() {
 		defer common.AppRecover()
-		// side effect
-		_ = biz.postStore.IncreaseFavoriteCount(ctx, data.PostId)
+		job := asyncjob.NewJob(func(ctx context.Context) error {
+			return biz.postStore.IncreaseFavoriteCount(ctx, data.PostId)
+		})
+		_ = asyncjob.NewGroup(true, job).Run(ctx)
 	}()
 
 	return nil

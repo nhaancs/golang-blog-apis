@@ -3,6 +3,7 @@ package favoritebiz
 import (
 	"context"
 	"nhaancs/common"
+	"nhaancs/component/asyncjob"
 	favoritemodel "nhaancs/modules/favorite/model"
 )
 
@@ -45,10 +46,13 @@ func (biz *unfavoriteBiz) Unfavorite(ctx context.Context, userId int, postId int
 		return common.ErrCannotDeleteEntity(favoritemodel.EntityName, err)
 	}
 
+	// side effect
 	go func() {
 		defer common.AppRecover()
-		// side effect
-		_ = biz.decStore.DecreaseFavoriteCount(ctx, postId)
+		job := asyncjob.NewJob(func(ctx context.Context) error {
+			return biz.decStore.DecreaseFavoriteCount(ctx, postId)
+		})
+		_ = asyncjob.NewGroup(true, job).Run(ctx)
 	}()
 
 	return nil
