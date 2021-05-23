@@ -23,7 +23,7 @@ type Post struct {
 	// we need to add a new layer call repository to get user and category info for us.
 	Category      *categorymodel.Category `json:"category" gorm:"column:preload:false;"`
 	User          *common.SimpleUser      `json:"user" gorm:"column:preload:false;"`
-	FavoriteCount int                     `json:"favorite_count" gorm:"-"`
+	FavoriteCount int                     `json:"favorite_count" gorm:"favorite_count"`
 }
 
 // We can get role info from common.Requester

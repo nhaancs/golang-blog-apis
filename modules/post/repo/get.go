@@ -14,20 +14,20 @@ type GetStore interface {
 	) (*postmodel.Post, error)
 }
 
-type FavoriteStore interface {
-	GetFavoriteCountsOfPosts(
-		ctx context.Context,
-		postIds []int,
-	) (map[int]int, error)
-}
+// type FavoriteStore interface {
+// 	GetFavoriteCountsOfPosts(
+// 		ctx context.Context,
+// 		postIds []int,
+// 	) (map[int]int, error)
+// }
 
 type getRepo struct {
-	store         GetStore
-	favoriteStore FavoriteStore
+	store GetStore
+	// favoriteStore FavoriteStore
 }
 
-func NewGetRepo(store GetStore, favoriteStore FavoriteStore) *getRepo {
-	return &getRepo{store: store, favoriteStore: favoriteStore}
+func NewGetRepo(store GetStore) *getRepo {
+	return &getRepo{store: store}
 }
 
 func (biz *getRepo) Get(ctx context.Context, conditions map[string]interface{}, isAdmin bool) (*postmodel.Post, error) {
@@ -43,11 +43,11 @@ func (biz *getRepo) Get(ctx context.Context, conditions map[string]interface{}, 
 		return nil, common.ErrEntityDeleted(postmodel.EntityName, nil)
 	}
 
-	ids := []int{data.Id}
-	postFavoriteMap, _ := biz.favoriteStore.GetFavoriteCountsOfPosts(ctx, ids) // ignore error
-	if v := postFavoriteMap; v != nil {
-		data.FavoriteCount = postFavoriteMap[data.Id]
-	}
+	// ids := []int{data.Id}
+	// postFavoriteMap, _ := biz.favoriteStore.GetFavoriteCountsOfPosts(ctx, ids) // ignore error
+	// if v := postFavoriteMap; v != nil {
+	// 	data.FavoriteCount = postFavoriteMap[data.Id]
+	// }
 
 	return data, nil
 }

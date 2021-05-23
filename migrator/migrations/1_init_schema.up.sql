@@ -40,7 +40,8 @@ CREATE TABLE `posts` (
   `published_at` datetime DEFAULT (now()),
   `keywords` varchar(255),
   `category_id` int NOT NULL,
-  `user_id` int NOT NULL
+  `user_id` int NOT NULL,
+  `favorite_count` int DEFAULT 0
 );
 
 CREATE TABLE `comments` (

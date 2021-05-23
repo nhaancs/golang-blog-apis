@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"nhaancs/common"
 	"nhaancs/component"
-	favoritestore "nhaancs/modules/favorite/store"
 	postbiz "nhaancs/modules/post/biz"
 	postmodel "nhaancs/modules/post/model"
 	postrepo "nhaancs/modules/post/repo"
@@ -28,8 +27,8 @@ func List(appCtx component.AppContext) gin.HandlerFunc {
 		paging.Fulfill()
 
 		store := poststore.NewSQLStore(appCtx.GetMainDBConnection())
-		favoriteStore := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
-		repo := postrepo.NewListRepo(store, favoriteStore)
+		// favoriteStore := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
+		repo := postrepo.NewListRepo(store)
 		biz := postbiz.NewListBiz(repo)
 		result, err := biz.List(c.Request.Context(), &filter, &paging, common.IsRequesterAdmin(c))
 		if err != nil {
