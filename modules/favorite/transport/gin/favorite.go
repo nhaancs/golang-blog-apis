@@ -25,7 +25,7 @@ func Favorite(appCtx component.AppContext) gin.HandlerFunc {
 
 		store := favoritestore.NewSQLStore(appCtx.GetMainDBConnection())
 		postStore := poststore.NewSQLStore(appCtx.GetMainDBConnection())
-		biz := favoritebiz.NewFavoriteBiz(store, postStore)
+		biz := favoritebiz.NewFavoriteBiz(store, postStore, appCtx.GetPubsub())
 		if err := biz.Favorite(c.Request.Context(), data); err != nil {
 			panic(err)
 		}

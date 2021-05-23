@@ -10,6 +10,8 @@ import (
 	ginpost "nhaancs/modules/post/transport/gin"
 	ginupload "nhaancs/modules/upload/transport/gin"
 	ginuser "nhaancs/modules/user/transport/gin"
+	"nhaancs/pubsub/pblocal"
+	"nhaancs/subscriber"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -43,7 +45,11 @@ func main() {
 }
 
 func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey string) error {
-	appCtx := component.NewAppContext(db, upProvider, secretKey)
+	appCtx := component.NewAppContext(db, upProvider, secretKey, pblocal.NewPubSub())
+	if err := subscriber.NewEngine(appCtx).Start(); err != nil {
+		log.Fatalln(err)
+	}
+
 	r := gin.Default()
 	r.Use(middleware.Recover(appCtx))
 	r.Use(middleware.RequiredAuthOrNot(appCtx))
@@ -82,7 +88,8 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 /*
 todo:
 - Comments module
-
+- Chat module (user chat with user, admin chat with user)
+- Counter module
 
 - Research join 2 bang post va favorite de update favorite_count bang 1 cau query
 - redo asyncjob

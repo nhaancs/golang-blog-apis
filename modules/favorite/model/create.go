@@ -22,6 +22,10 @@ func (res *FavoriteCreate) Validate() error {
 	return nil
 }
 
+func (f *FavoriteCreate) GetPostId() int {
+	return f.PostId
+}
+
 func (data *FavoriteCreate) Mask(isAdmin bool) {
 
 }

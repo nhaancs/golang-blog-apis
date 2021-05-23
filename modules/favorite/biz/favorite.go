@@ -3,9 +3,9 @@ package favoritebiz
 import (
 	"context"
 	"nhaancs/common"
-	"nhaancs/component/asyncjob"
 	favoritemodel "nhaancs/modules/favorite/model"
 	postmodel "nhaancs/modules/post/model"
+	"nhaancs/pubsub"
 )
 
 type FavoriteStore interface {
@@ -23,20 +23,16 @@ type PostStore interface {
 		conditions map[string]interface{},
 		moreKeys ...string,
 	) (*postmodel.Post, error)
-
-	IncreaseFavoriteCount(
-		ctx context.Context,
-		postId int,
-	) error
 }
 
 type favoriteBiz struct {
 	store     FavoriteStore
 	postStore PostStore
+	pubsub    pubsub.Pubsub
 }
 
-func NewFavoriteBiz(store FavoriteStore, postStore PostStore) *favoriteBiz {
-	return &favoriteBiz{store: store, postStore: postStore}
+func NewFavoriteBiz(store FavoriteStore, postStore PostStore, pubsub pubsub.Pubsub) *favoriteBiz {
+	return &favoriteBiz{store: store, postStore: postStore, pubsub: pubsub}
 }
 
 func (biz *favoriteBiz) Favorite(ctx context.Context, data *favoritemodel.FavoriteCreate) error {
@@ -62,14 +58,7 @@ func (biz *favoriteBiz) Favorite(ctx context.Context, data *favoritemodel.Favori
 		return common.ErrCannotCreateEntity(favoritemodel.EntityName, err)
 	}
 
-	// side effect
-	go func() {
-		defer common.AppRecover()
-		job := asyncjob.NewJob(func(ctx context.Context) error {
-			return biz.postStore.IncreaseFavoriteCount(ctx, data.PostId)
-		})
-		_ = asyncjob.NewGroup(true, job).Run(ctx)
-	}()
+	biz.pubsub.Publish(ctx, common.TopicUserFavoritePost, pubsub.NewMessage(data))
 
 	return nil
 }
