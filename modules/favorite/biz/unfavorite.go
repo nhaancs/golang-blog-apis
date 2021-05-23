@@ -19,12 +19,20 @@ type UnfavoriteStore interface {
 	) error
 }
 
-type unfavoriteBiz struct {
-	store UnfavoriteStore
+type DecreaseFavoriteCountStore interface {
+	DecreaseFavoriteCount(
+		ctx context.Context,
+		postId int,
+	) error
 }
 
-func NewUnfavoriteBiz(store UnfavoriteStore) *unfavoriteBiz {
-	return &unfavoriteBiz{store: store}
+type unfavoriteBiz struct {
+	store    UnfavoriteStore
+	decStore DecreaseFavoriteCountStore
+}
+
+func NewUnfavoriteBiz(store UnfavoriteStore, decStore DecreaseFavoriteCountStore) *unfavoriteBiz {
+	return &unfavoriteBiz{store: store, decStore: decStore}
 }
 
 func (biz *unfavoriteBiz) Unfavorite(ctx context.Context, userId int, postId int) error {
@@ -36,6 +44,12 @@ func (biz *unfavoriteBiz) Unfavorite(ctx context.Context, userId int, postId int
 	if err := biz.store.Delete(ctx, userId, postId); err != nil {
 		return common.ErrCannotDeleteEntity(favoritemodel.EntityName, err)
 	}
+
+	go func() {
+		defer common.AppRecover()
+		// side effect
+		_ = biz.decStore.DecreaseFavoriteCount(ctx, postId)
+	}()
 
 	return nil
 }

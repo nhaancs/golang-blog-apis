@@ -16,21 +16,26 @@ type FavoriteStore interface {
 	) (*favoritemodel.Favorite, error)
 }
 
-type GetPostStore interface {
+type PostStore interface {
 	Get(
 		ctx context.Context,
 		conditions map[string]interface{},
 		moreKeys ...string,
 	) (*postmodel.Post, error)
+
+	IncreaseFavoriteCount(
+		ctx context.Context,
+		postId int,
+	) error
 }
 
 type favoriteBiz struct {
-	store        FavoriteStore
-	getPostStore GetPostStore
+	store     FavoriteStore
+	postStore PostStore
 }
 
-func NewFavoriteBiz(store FavoriteStore, getPostStore GetPostStore) *favoriteBiz {
-	return &favoriteBiz{store: store, getPostStore: getPostStore}
+func NewFavoriteBiz(store FavoriteStore, postStore PostStore) *favoriteBiz {
+	return &favoriteBiz{store: store, postStore: postStore}
 }
 
 func (biz *favoriteBiz) Favorite(ctx context.Context, data *favoritemodel.FavoriteCreate) error {
@@ -46,7 +51,7 @@ func (biz *favoriteBiz) Favorite(ctx context.Context, data *favoritemodel.Favori
 	}
 
 	{
-		post, err := biz.getPostStore.Get(ctx, map[string]interface{}{"id": data.PostId})
+		post, err := biz.postStore.Get(ctx, map[string]interface{}{"id": data.PostId})
 		if err != nil || !post.IsEnabled || post.DeletedAt != nil {
 			return favoritemodel.ErrFavoritePostIsInvalid(err)
 		}
@@ -55,6 +60,12 @@ func (biz *favoriteBiz) Favorite(ctx context.Context, data *favoritemodel.Favori
 	if err := biz.store.Create(ctx, data); err != nil {
 		return common.ErrCannotCreateEntity(favoritemodel.EntityName, err)
 	}
+
+	go func() {
+		defer common.AppRecover()
+		// side effect
+		_ = biz.postStore.IncreaseFavoriteCount(ctx, data.PostId)
+	}()
 
 	return nil
 }

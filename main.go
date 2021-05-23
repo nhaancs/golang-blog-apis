@@ -84,7 +84,7 @@ todo:
 - Comments module
 
 
-- Research join 2 bang post va favorite de update favoritecount bang 1 cau query
+- Research join 2 bang post va favorite de update favorite_count bang 1 cau query
 - redo asyncjob
 - redo workerpool
 - redo pubsub
