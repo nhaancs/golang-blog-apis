@@ -11,6 +11,7 @@ func RunDecreaseUnfavoriteCountAfterUserFavoritesAPost(appCtx component.AppConte
 	return subscribedJob{
 		Title: "Decrease favorite count after user unfavorites a post",
 		Handler: func(ctx context.Context, message *pubsub.Message) error {
+			// _ = message.Data().([]int)[0] // simulate crashes
 			store := poststore.NewSQLStore(appCtx.GetMainDBConnection())
 			postId := message.Data().(int)
 			return store.DecreaseFavoriteCount(ctx, postId)

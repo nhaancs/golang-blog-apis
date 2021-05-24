@@ -3,6 +3,7 @@ package asyncjob
 import (
 	"context"
 	"log"
+	"nhaancs/common"
 	"sync"
 )
 
@@ -46,6 +47,8 @@ func (g *group) Run(ctx context.Context) error {
 	for i := range g.jobs {
 		if g.isConcurrent {
 			go func(aj Job) {
+				// This function will be run cuncurrently, AppRecover will revover the programm when the goroutine get crashed
+				defer common.AppRecover()
 				defer g.wg.Done()
 				errChan <- g.runJob(ctx, aj)
 			}(g.jobs[i])

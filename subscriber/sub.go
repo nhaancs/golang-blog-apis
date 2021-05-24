@@ -44,8 +44,7 @@ func (engine *consumerEngine) subscribeToATopic(topic pubsub.Topic, isConcurrent
 	// Helper function: convert a subscribedJob + pubsub.Message into an asyncjob JobHandler
 	getJobHandler := func(job *subscribedJob, message *pubsub.Message) asyncjob.JobHandler {
 		return func(ctx context.Context) error {
-			// This function will be run cuncurrently, AppRecover will revover the programm when the goroutine get crashed
-			defer common.AppRecover()
+			// defer common.AppRecover()
 			log.Println("Running job: ", job.Title, ". Value: ", message.Data())
 			return job.Handler(ctx, message)
 		}
