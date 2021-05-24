@@ -14,15 +14,15 @@ type subscribedJob struct {
 	Handler func(ctx context.Context, message *pubsub.Message) error
 }
 
-func NewEngine(appContext component.AppContext) *consumerEngine {
-	return &consumerEngine{appCtx: appContext}
+func NewEngine(appContext component.AppContext) *subscriberEngine {
+	return &subscriberEngine{appCtx: appContext}
 }
 
-type consumerEngine struct {
+type subscriberEngine struct {
 	appCtx component.AppContext
 }
 
-func (engine *consumerEngine) Start() error {
+func (engine *subscriberEngine) Start() error {
 	engine.subscribeToATopic(
 		common.TopicUserFavoritePost,
 		true,
@@ -34,13 +34,13 @@ func (engine *consumerEngine) Start() error {
 		true,
 		RunDecreaseUnfavoriteCountAfterUserFavoritesAPost(engine.appCtx),
 	)
-	
+
 	engine.subscribeToATopic(
 		common.TopicCategoryDisabled,
 		true,
 		RunDisableAllPostsInACategoryGetDisabled(engine.appCtx),
 	)
-	
+
 	engine.subscribeToATopic(
 		common.TopicCategoryDeleted,
 		true,
@@ -50,7 +50,7 @@ func (engine *consumerEngine) Start() error {
 	return nil
 }
 
-func (engine *consumerEngine) subscribeToATopic(topic pubsub.Topic, isConcurrent bool, subscribedJobs ...subscribedJob) error {
+func (engine *subscriberEngine) subscribeToATopic(topic pubsub.Topic, isConcurrent bool, subscribedJobs ...subscribedJob) error {
 	// Subscribe to a topic and get back a channel to listen
 	c, _ := engine.appCtx.GetPubsub().Subscribe(context.Background(), topic)
 	// Helper function: convert a subscribedJob + pubsub.Message into an asyncjob JobHandler
@@ -65,16 +65,15 @@ func (engine *consumerEngine) subscribeToATopic(topic pubsub.Topic, isConcurrent
 		for { // listen to a returned channel forever
 			// each time the topic publish a new message, we will get a new message from return channel
 			msg := <-c
-			jobHandlerArr := make([]asyncjob.Job, len(subscribedJobs))
+			asyncJobs := make([]asyncjob.Job, len(subscribedJobs))
 			for i := range subscribedJobs {
 				// combine all subscribed jobs with the new message
 				// converted into asyncjob.JobHandler
 				jobHandler := getJobHandler(&subscribedJobs[i], msg)
-
-				jobHandlerArr[i] = asyncjob.NewJob(jobHandler)
+				asyncJobs[i] = asyncjob.NewJob(jobHandler)
 			}
 
-			group := asyncjob.NewGroup(isConcurrent, jobHandlerArr...)
+			group := asyncjob.NewGroup(isConcurrent, asyncJobs...)
 			if err := group.Run(context.Background()); err != nil {
 				log.Println(err)
 			}

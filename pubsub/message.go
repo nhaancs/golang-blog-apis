@@ -7,14 +7,13 @@ import (
 
 type Message struct {
 	id        string
-	topic     Topic // can be ignore
+	topic     Topic
 	data      interface{}
 	createdAt time.Time
 }
 
 func NewMessage(data interface{}) *Message {
 	now := time.Now().UTC()
-
 	return &Message{
 		id:        fmt.Sprintf("%d", now.UnixNano()),
 		data:      data,

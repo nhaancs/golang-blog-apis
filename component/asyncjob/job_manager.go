@@ -23,24 +23,6 @@ func NewGroup(isConcurrent bool, jobs ...Job) *group {
 	return g
 }
 
-//func (g *group) Run2(ctx context.Context) error {
-//	errChan := make(chan error, len(g.jobs))
-//
-//	for i, _ := range g.jobs {
-//		errChan <- g.runJob(ctx, g.jobs[i])
-//	}
-//
-//	var err error
-//
-//	for i := 1; i <= len(g.jobs); i++ {
-//		if v := <-errChan; v != nil {
-//			err = v
-//		}
-//	}
-//
-//	return err
-//}
-
 func (g *group) Run(ctx context.Context) error {
 	g.wg.Add(len(g.jobs))
 	errChan := make(chan error, len(g.jobs))

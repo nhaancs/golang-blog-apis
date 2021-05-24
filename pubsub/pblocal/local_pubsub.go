@@ -11,7 +11,6 @@ import (
 // A pb run locally (in-mem)
 // It has a queue (buffer channel) at it's core and many group of subscribers.
 // Because we want to send a message with a specific topic for many subscribers in a group can handle.
-
 type localPubSub struct {
 	messageQueue chan *pubsub.Message
 	topicsMap    map[pubsub.Topic][]chan *pubsub.Message
@@ -30,14 +29,15 @@ func NewPubSub() *localPubSub {
 	return pb
 }
 
-func (ps *localPubSub) Publish(ctx context.Context, topic pubsub.Topic, data *pubsub.Message) error {
-	data.SetTopic(topic)
+func (ps *localPubSub) Publish(ctx context.Context, topic pubsub.Topic, msg *pubsub.Message) error {
+	msg.SetTopic(topic)
 
 	go func() {
 		defer common.AppRecover()
-		ps.messageQueue <- data
-		log.Println("New event published:", data.String(), "with data", data.Data())
+		ps.messageQueue <- msg
+		log.Println("New event published:", msg.String(), "with data", msg.Data())
 	}()
+
 	return nil
 }
 
@@ -49,7 +49,6 @@ func (ps *localPubSub) Subscribe(ctx context.Context, topic pubsub.Topic) (ch <-
 
 	return c, func() {
 		log.Println("Unsubscribe")
-
 		if chans, ok := ps.topicsMap[topic]; ok {
 			for i := range chans {
 				if chans[i] == c {
@@ -69,23 +68,17 @@ func (ps *localPubSub) Subscribe(ctx context.Context, topic pubsub.Topic) (ch <-
 
 func (ps *localPubSub) run() error {
 	log.Println("Pubsub started")
-
 	go func() {
 		for {
 			mess := <-ps.messageQueue
 			log.Println("Message dequeue:", mess)
-
 			if subs, ok := ps.topicsMap[mess.Topic()]; ok {
 				for i := range subs {
 					go func(c chan *pubsub.Message) {
 						c <- mess
-						//f(mess)
 					}(subs[i])
 				}
 			}
-			//else {
-			//	ps.messageQueue <- mess
-			//}
 		}
 	}()
 

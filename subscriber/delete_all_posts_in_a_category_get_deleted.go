@@ -15,7 +15,7 @@ func RunDeleteAllPostsInACategoryGetDeleted(appCtx component.AppContext) subscri
 			db := appCtx.GetMainDBConnection()
 			res := db.Exec("UPDATE posts SET deleted_at = ? WHERE category_id = ?", time.Now(), categoryId)
 			// log error
-			
+
 			return res.Error
 		},
 	}

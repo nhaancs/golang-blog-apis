@@ -20,7 +20,7 @@ type DeleteStore interface {
 }
 
 type deleteBiz struct {
-	store DeleteStore
+	store  DeleteStore
 	pubsub pubsub.Pubsub
 }
 
