@@ -18,7 +18,7 @@ func Delete(appCtx component.AppContext) gin.HandlerFunc {
 		}
 
 		store := categorystore.NewSQLStore(appCtx.GetMainDBConnection())
-		biz := categorybiz.NewDeleteBiz(store)
+		biz := categorybiz.NewDeleteBiz(store, appCtx.GetPubsub())
 		if err := biz.Delete(c.Request.Context(), int(uid.GetLocalID())); err != nil {
 			panic(err)
 		}

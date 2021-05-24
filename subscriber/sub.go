@@ -34,6 +34,18 @@ func (engine *consumerEngine) Start() error {
 		true,
 		RunDecreaseUnfavoriteCountAfterUserFavoritesAPost(engine.appCtx),
 	)
+	
+	engine.subscribeToATopic(
+		common.TopicCategoryDisabled,
+		true,
+		RunDisableAllPostsInACategoryGetDisabled(engine.appCtx),
+	)
+	
+	engine.subscribeToATopic(
+		common.TopicCategoryDeleted,
+		true,
+		RunDeleteAllPostsInACategoryGetDeleted(engine.appCtx),
+	)
 
 	return nil
 }
@@ -44,7 +56,6 @@ func (engine *consumerEngine) subscribeToATopic(topic pubsub.Topic, isConcurrent
 	// Helper function: convert a subscribedJob + pubsub.Message into an asyncjob JobHandler
 	getJobHandler := func(job *subscribedJob, message *pubsub.Message) asyncjob.JobHandler {
 		return func(ctx context.Context) error {
-			// defer common.AppRecover()
 			log.Println("Running job: ", job.Title, ". Value: ", message.Data())
 			return job.Handler(ctx, message)
 		}

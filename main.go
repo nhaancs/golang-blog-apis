@@ -87,7 +87,7 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 
 /*
 todo:
-- Comments module
+- Comments module (no need pubsub)
 - Chat module (user chat with user, admin chat with user)
 - Counter module
 

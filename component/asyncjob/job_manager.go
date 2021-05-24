@@ -64,7 +64,6 @@ func (g *group) Run(ctx context.Context) error {
 	var err error
 	for i := 1; i <= len(g.jobs); i++ {
 		if v := <-errChan; v != nil {
-			// todo: only return last error?
 			err = v
 		}
 	}

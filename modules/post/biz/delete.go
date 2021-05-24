@@ -39,7 +39,5 @@ func (biz *deleteBiz) Delete(ctx context.Context, id int) error {
 		return common.ErrCannotDeleteEntity(postmodel.EntityName, err)
 	}
 
-	// todo: create a cron job to delete image from image table and from s3
-
 	return nil
 }

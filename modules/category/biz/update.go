@@ -4,6 +4,7 @@ import (
 	"context"
 	"nhaancs/common"
 	categorymodel "nhaancs/modules/category/model"
+	"nhaancs/pubsub"
 )
 
 type UpdateStore interface {
@@ -20,11 +21,12 @@ type UpdateStore interface {
 }
 
 type updateBiz struct {
-	store UpdateStore
+	store  UpdateStore
+	pubsub pubsub.Pubsub
 }
 
-func NewUpdateBiz(store UpdateStore) *updateBiz {
-	return &updateBiz{store: store}
+func NewUpdateBiz(store UpdateStore, pubsub pubsub.Pubsub) *updateBiz {
+	return &updateBiz{store: store, pubsub: pubsub}
 }
 
 func (biz *updateBiz) Update(ctx context.Context, id int, data *categorymodel.CategoryUpdate) error {
@@ -52,7 +54,8 @@ func (biz *updateBiz) Update(ctx context.Context, id int, data *categorymodel.Ca
 	}
 
 	if data.IsEnabled != nil && !*data.IsEnabled {
-		// todo: create a cron job to disable all posts in this category
+		// create a cron job to disable all posts in this category
+		biz.pubsub.Publish(ctx, common.TopicCategoryDisabled, pubsub.NewMessage(id))
 	}
 
 	return nil

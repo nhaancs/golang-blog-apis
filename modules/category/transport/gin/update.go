@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"nhaancs/common"
 	"nhaancs/component"
-	"nhaancs/modules/category/biz"
-	"nhaancs/modules/category/model"
-	"nhaancs/modules/category/store"
+	categorybiz "nhaancs/modules/category/biz"
+	categorymodel "nhaancs/modules/category/model"
+	categorystore "nhaancs/modules/category/store"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +24,7 @@ func Update(appCtx component.AppContext) gin.HandlerFunc {
 		}
 
 		store := categorystore.NewSQLStore(appCtx.GetMainDBConnection())
-		biz := categorybiz.NewUpdateBiz(store)
+		biz := categorybiz.NewUpdateBiz(store, appCtx.GetPubsub())
 		if err := biz.Update(c.Request.Context(), int(uid.GetLocalID()), &data); err != nil {
 			panic(err)
 		}

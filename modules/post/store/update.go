@@ -35,7 +35,6 @@ func (s *sqlStore) IncreaseFavoriteCount(
 	return nil
 }
 
-// todo: what if favorite_count = 0, favorite_count - 1 = -1?
 func (s *sqlStore) DecreaseFavoriteCount(
 	ctx context.Context,
 	id int,
