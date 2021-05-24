@@ -40,7 +40,9 @@ func (s *sqlStore) DecreaseFavoriteCount(
 	id int,
 ) error {
 	db := s.db
-	if err := db.Table(postmodel.Post{}.TableName()).Where("id = ?", id).
+	if err := db.Table(postmodel.Post{}.TableName()).
+		Where("id = ?", id).
+		Where("favorite_count > ?", 0).
 		// use expression you dont need to query for old data, and can prevent race condition
 		Update("favorite_count", gorm.Expr("favorite_count - ?", 1)).Error; err != nil {
 		return common.ErrDB(err)
