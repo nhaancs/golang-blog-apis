@@ -61,7 +61,7 @@ func main() {
 
 	router.GET("/socket.io/*any", gin.WrapH(socketServer))
 	router.POST("/socket.io/*any", gin.WrapH(socketServer))
-	router.StaticFS("/public", http.Dir("./asset"))
+	router.StaticFS("/socket-example-1", http.Dir("./asset"))
 
 	if err := router.Run(":8000"); err != nil {
 		log.Fatal("failed run app: ", err)
