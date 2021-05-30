@@ -11,6 +11,7 @@ type HasPostId interface {
 	GetPostId() int
 }
 
+
 func RunIncreaseFavoriteCountAfterUserFavoritesAPost(appCtx component.AppContext) subscribedJob {
 	return subscribedJob{
 		Title: "Increase favorite count after user favorites a post",

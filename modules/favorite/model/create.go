@@ -26,6 +26,10 @@ func (f *FavoriteCreate) GetPostId() int {
 	return f.PostId
 }
 
+func (f *FavoriteCreate) GetUserId() int {
+	return f.UserId
+}
+
 func (data *FavoriteCreate) Mask(isAdmin bool) {
 
 }

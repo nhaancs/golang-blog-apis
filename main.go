@@ -12,6 +12,7 @@ import (
 	ginuser "nhaancs/modules/user/transport/gin"
 	"nhaancs/pubsub/pblocal"
 	"nhaancs/subscriber"
+	"nhaancs/socket"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -46,11 +47,17 @@ func main() {
 
 func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey string) error {
 	appCtx := component.NewAppContext(db, upProvider, secretKey, pblocal.NewPubSub())
+	r := gin.Default()
+
+	rtEngine := socket.NewEngine()
+	if err := rtEngine.Run(appCtx, r); err != nil {
+		log.Fatalln(err)
+	}
+
 	if err := subscriber.NewEngine(appCtx).Start(); err != nil {
 		log.Fatalln(err)
 	}
 
-	r := gin.Default()
 	r.Use(middleware.Recover(appCtx))
 	r.Use(middleware.RequiredAuthOrNot(appCtx))
 

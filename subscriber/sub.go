@@ -7,6 +7,7 @@ import (
 	"nhaancs/component"
 	"nhaancs/component/asyncjob"
 	"nhaancs/pubsub"
+	"nhaancs/socket"
 )
 
 type subscribedJob struct {
@@ -14,12 +15,13 @@ type subscribedJob struct {
 	Handler func(ctx context.Context, message *pubsub.Message) error
 }
 
-func NewEngine(appContext component.AppContext) *subscriberEngine {
-	return &subscriberEngine{appCtx: appContext}
+func NewEngine(appContext component.AppContext, rtEngine socket.RealtimeEngine) *subscriberEngine {
+	return &subscriberEngine{appCtx: appContext, rtEngine: rtEngine}
 }
 
 type subscriberEngine struct {
-	appCtx component.AppContext
+	appCtx   component.AppContext
+	rtEngine socket.RealtimeEngine
 }
 
 func (engine *subscriberEngine) Start() error {
@@ -27,6 +29,7 @@ func (engine *subscriberEngine) Start() error {
 		common.TopicUserFavoritePost,
 		true,
 		RunIncreaseFavoriteCountAfterUserFavoritesAPost(engine.appCtx),
+		EmitRealtimeAfterUserFavoritesAPost(engine.appCtx, engine.rtEngine),
 	)
 
 	engine.subscribeToATopic(
