@@ -73,7 +73,7 @@ func main() {
 
 		user, err := store.FindUser(context.Background(), map[string]interface{}{"id": payload.UserId})
 		if err != nil {
-			socketConnection.Emit("authentication_failed", "database error: " + err.Error())
+			socketConnection.Emit("authentication_failed", "database error: "+err.Error())
 			socketConnection.Close()
 			return
 		}

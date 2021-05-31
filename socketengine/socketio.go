@@ -1,10 +1,10 @@
-package socket
+package socketengine
 
 import (
-	"nhaancs/common"
 	"net"
 	"net/http"
 	"net/url"
+	"nhaancs/common"
 )
 
 type Conn interface {
@@ -23,7 +23,7 @@ type Conn interface {
 	Context() interface{}
 	SetContext(v interface{})
 	Namespace() string
-	Emit(msg string, v ...interface{})
+	Emit(eventName string, v ...interface{})
 
 	// Broadcast server side apis
 	Join(room string)

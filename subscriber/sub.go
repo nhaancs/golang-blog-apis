@@ -7,7 +7,7 @@ import (
 	"nhaancs/component"
 	"nhaancs/component/asyncjob"
 	"nhaancs/pubsub"
-	"nhaancs/socket"
+	"nhaancs/socketengine"
 )
 
 type subscribedJob struct {
@@ -15,13 +15,13 @@ type subscribedJob struct {
 	Handler func(ctx context.Context, message *pubsub.Message) error
 }
 
-func NewEngine(appContext component.AppContext, rtEngine socket.RealtimeEngine) *subscriberEngine {
+func NewEngine(appContext component.AppContext, rtEngine socketengine.RealtimeEngine) *subscriberEngine {
 	return &subscriberEngine{appCtx: appContext, rtEngine: rtEngine}
 }
 
 type subscriberEngine struct {
 	appCtx   component.AppContext
-	rtEngine socket.RealtimeEngine
+	rtEngine socketengine.RealtimeEngine
 }
 
 func (engine *subscriberEngine) Start() error {

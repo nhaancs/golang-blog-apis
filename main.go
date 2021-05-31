@@ -11,8 +11,8 @@ import (
 	ginupload "nhaancs/modules/upload/transport/gin"
 	ginuser "nhaancs/modules/user/transport/gin"
 	"nhaancs/pubsub/pblocal"
+	"nhaancs/socketengine"
 	"nhaancs/subscriber"
-	"nhaancs/socket"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -49,12 +49,12 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 	appCtx := component.NewAppContext(db, upProvider, secretKey, pblocal.NewPubSub())
 	r := gin.Default()
 
-	rtEngine := socket.NewEngine()
+	rtEngine := socketengine.NewEngine()
 	if err := rtEngine.Run(appCtx, r); err != nil {
 		log.Fatalln(err)
 	}
 
-	if err := subscriber.NewEngine(appCtx).Start(); err != nil {
+	if err := subscriber.NewEngine(appCtx, rtEngine).Start(); err != nil {
 		log.Fatalln(err)
 	}
 

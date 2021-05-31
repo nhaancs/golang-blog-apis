@@ -1,4 +1,4 @@
-package socket
+package socketengine
 
 import (
 	"context"
@@ -7,6 +7,7 @@ import (
 	"nhaancs/component"
 	"nhaancs/component/tokenprovider/jwt"
 	userstorage "nhaancs/modules/user/store"
+	"nhaancs/modules/user/transport/socket"
 	"sync"
 
 	"github.com/gin-gonic/gin"
@@ -18,10 +19,9 @@ import (
 
 type RealtimeEngine interface {
 	UserSockets(userId int) []AppSocket
-	EmitToRoom(room string, key string, data interface{}) error
-	EmitToUser(userId int, key string, data interface{}) error
-	Run(ctx component.AppContext, engine *gin.Engine) error
-	//Emit(userId int) error
+	EmitToRoom(room string, eventName string, data interface{}) error
+	EmitToUser(userId int, eventName string, data interface{}) error
+	// Run(ctx component.AppContext, engine *gin.Engine) error
 }
 
 type rtEngine struct {
@@ -37,9 +37,27 @@ func NewEngine() *rtEngine {
 	}
 }
 
+func (engine *rtEngine) UserSockets(userId int) []AppSocket {
+	engine.locker.RLock()
+	defer engine.locker.RUnlock()
+	return engine.storage[userId]
+}
+
+func (engine *rtEngine) EmitToRoom(room string, eventName string, data interface{}) error {
+	engine.server.BroadcastToRoom("/", room, eventName, data)
+	return nil
+}
+
+func (engine *rtEngine) EmitToUser(userId int, eventName string, data interface{}) error {
+	sockets := engine.UserSockets(userId)
+	for _, socketConnection := range sockets {
+		socketConnection.Emit(eventName, data)
+	}
+	return nil
+}
+
 func (engine *rtEngine) saveAppSocket(userId int, appSck AppSocket) {
 	engine.locker.Lock()
-	//appSck.Join("order-{ordID}")
 	if v, ok := engine.storage[userId]; ok {
 		engine.storage[userId] = append(v, appSck)
 	} else {
@@ -47,12 +65,6 @@ func (engine *rtEngine) saveAppSocket(userId int, appSck AppSocket) {
 	}
 
 	engine.locker.Unlock()
-}
-
-func (engine *rtEngine) getAppSocket(userId int) []AppSocket {
-	engine.locker.RLock()
-	defer engine.locker.RUnlock()
-	return engine.storage[userId]
 }
 
 func (engine *rtEngine) removeAppSocket(userId int, appSck AppSocket) {
@@ -68,87 +80,64 @@ func (engine *rtEngine) removeAppSocket(userId int, appSck AppSocket) {
 	}
 }
 
-func (engine *rtEngine) UserSockets(userId int) []AppSocket {
-	var sockets []AppSocket
-	if scks, ok := engine.storage[userId]; ok {
-		return scks
-	}
-	return sockets
-}
-
-func (engine *rtEngine) EmitToRoom(room string, key string, data interface{}) error {
-	engine.server.BroadcastToRoom("/", room, key, data)
-	return nil
-}
-
-func (engine *rtEngine) EmitToUser(userId int, key string, data interface{}) error {
-	sockets := engine.getAppSocket(userId)
-	for _, s := range sockets {
-		s.Emit(key, data)
-	}
-	return nil
-}
-
+// starts socket server and
+// listens to important events
 func (engine *rtEngine) Run(appCtx component.AppContext, r *gin.Engine) error {
 	server := socketio.NewServer(&engineio.Options{
 		Transports: []transport.Transport{websocket.Default},
 	})
 	engine.server = server
-	server.OnConnect("/", func(s socketio.Conn) error {
-		s.SetContext("")
-		fmt.Println("connected:", s.ID(), " IP:", s.RemoteAddr(), s.ID())
+
+	server.OnConnect("/", func(socketConnection socketio.Conn) error {
+		socketConnection.SetContext("")
+		fmt.Println("connected:", socketConnection.ID(), " IP:", socketConnection.RemoteAddr(), socketConnection.ID())
 		return nil
 	})
 
-	server.OnError("/", func(s socketio.Conn, e error) {
+	server.OnError("/", func(socketConnection socketio.Conn, e error) {
 		fmt.Println("meet error:", e)
 	})
 
-	server.OnDisconnect("/", func(s socketio.Conn, reason string) {
+	server.OnDisconnect("/", func(socketConnection socketio.Conn, reason string) {
 		fmt.Println("closed", reason)
 	})
 
 	// Setup
-	server.OnEvent("/", "authenticate", func(s socketio.Conn, token string) {
+	server.OnEvent("/", "authenticate", func(socketConnection socketio.Conn, token string) {
 		db := appCtx.GetMainDBConnection()
 		store := userstorage.NewSQLStore(db)
 
 		tokenProvider := jwt.NewTokenJWTProvider(appCtx.SecretKey())
-
 		payload, err := tokenProvider.Validate(token)
 		if err != nil {
-			s.Emit("authentication_failed", err.Error())
-			s.Close()
+			socketConnection.Emit("authentication_failed", err.Error())
+			socketConnection.Close()
 			return
 		}
 
 		user, err := store.FindUser(context.Background(), map[string]interface{}{"id": payload.UserId})
-
 		if err != nil {
-			s.Emit("authentication_failed", err.Error())
-			s.Close()
+			socketConnection.Emit("authentication_failed", err.Error())
+			socketConnection.Close()
 			return
 		}
-
 		if user.DeletedAt != nil {
-			s.Emit("authentication_failed", errors.New("you has been banned/deleted"))
-			s.Close()
+			socketConnection.Emit("authentication_failed", errors.New("you has been banned/deleted"))
+			socketConnection.Close()
 			return
 		}
-
 		user.Mask(false)
 
-		appSck := NewAppSocket(s, user)
+		appSck := NewAppSocket(socketConnection, user)
 		engine.saveAppSocket(user.Id, appSck)
-
-		s.Emit("authenticated", user)
+		socketConnection.Emit("authenticated", user)
 
 		//appSck.Join(user.GetRole()) // the same
 		//if user.GetRole() == "admin" {
 		//	appSck.Join("admin")
 		//}
 
-		// server.OnEvent("/", "UserUpdateLocation", skuser.OnUserUpdateLocation(appCtx, user))
+		server.OnEvent("/", "UserUpdateLocation", socketuser.OnUserUpdateLocation(appCtx, user))
 	})
 
 	go server.Serve()
