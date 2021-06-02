@@ -16,16 +16,11 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func main() {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatalln("Error loading .env file: ", err)
-	}
-
 	db, err := gorm.Open(mysql.Open(os.Getenv("DSN")), &gorm.Config{})
 	if err != nil {
 		log.Fatalln("Error connecting database: ", err)
