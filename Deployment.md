@@ -7,14 +7,14 @@
     make setpermissions
     ```
     
-## Server setup (first time only)
+## Server setup from client (first time only)
 - Setup ssh connection from client to server
 - Run command
     ```bash
     make setupserver
     ```
 
-## Deploy
+## Deploy to server from client
 - Do migrations (if any)
     ```bash
     make migratedb

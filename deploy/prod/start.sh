@@ -4,7 +4,7 @@ docker load -i ${APP_NAME}.tar
 docker rm -f ${APP_NAME}
 
 docker run -d \
-  --name ${APP_NAME} \ 
+  --name ${APP_NAME} \
   --network ${DOCKER_NETWORK} \
   -p ${EXPORTED_PORT}:${PORT} \
   -e PORT="${PORT}" \
@@ -12,7 +12,7 @@ docker run -d \
   -e VIRTUAL_HOST="${VIRTUAL_HOST}" \
   -e LETSENCRYPT_HOST="${LETSENCRYPT_HOST}" \
   -e LETSENCRYPT_EMAIL="${LETSENCRYPT_EMAIL}" \
-  -e DSN="${DSN}" \
+  -e DSN="$(echo "${DSN}" | base64 --decode)" \
   -e AUTH_SECRET="${AUTH_SECRET}" \
   -e S3_BUCKET_NAME="${S3_BUCKET_NAME}" \
   -e S3_REGION="${S3_REGION}" \
