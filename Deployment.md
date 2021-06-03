@@ -6,7 +6,7 @@
     ```bash
     make setpermissions
     ```
-
+    
 ## Server setup (first time only)
 - Setup ssh connection from client to server
 - Run command

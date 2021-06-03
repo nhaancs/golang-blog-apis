@@ -14,7 +14,7 @@
 - Otherwise, run `make startdb` instead
 
 ### Run migrations
-- Run `make buildmigrator` and `make migrateup`
+- Run `make migrateup`
 
 ### Start
 - Run `make start`

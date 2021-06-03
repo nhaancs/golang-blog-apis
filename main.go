@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"nhaancs/component"
 	"nhaancs/component/uploadprovider"
@@ -21,6 +22,7 @@ import (
 )
 
 func main() {
+	fmt.Println(os.Getenv("DSN"))
 	db, err := gorm.Open(mysql.Open(os.Getenv("DSN")), &gorm.Config{})
 	if err != nil {
 		log.Fatalln("Error connecting database: ", err)
@@ -86,15 +88,3 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 
 	return r.Run()
 }
-
-/*
-todo:
-- Comments module (no need pubsub)
-- Chat module (user chat with user, admin chat with user)
-- Counter module
-
-- Research join 2 bang post va favorite de update favorite_count bang 1 cau query
-- redo asyncjob
-- redo workerpool
-- redo pubsub
-*/

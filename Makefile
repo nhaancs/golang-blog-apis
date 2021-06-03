@@ -15,10 +15,9 @@ rundb:
 	bitnami/mysql:8.0
 startdb:
 	@docker start mysql
-buildmigrator:
-	@docker build -t migrator ./migrator
 migrateup:
-	@docker rm -f migrator && \
+	@docker build -t migrator ./migrator && \
+	docker rm -f migrator && \
 	docker run \
 	--name migrator \
 	--network ${DOCKER_NETWORK} \
@@ -29,7 +28,7 @@ migrateup:
 start:
 	@PORT="${PORT}" \
 	GIN_MODE="${GIN_MODE}" \
-	DSN="${DSN}" \
+	DSN="${DSN_LOCAL}" \
 	AUTH_SECRET="${AUTH_SECRET}" \
 	S3_BUCKET_NAME="${S3_BUCKET_NAME}" \
 	S3_REGION="${S3_REGION}" \
@@ -49,4 +48,4 @@ migratedb:
 deploy:
 	@./deploy/deploy.sh
 
-.PHONY: rundb startdb migrateup buildmigrator start fmt deploy migratedb setupserver setpermissions
+.PHONY: rundb startdb migrateup start fmt deploy migratedb setupserver setpermissions

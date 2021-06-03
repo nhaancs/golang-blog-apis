@@ -6,7 +6,6 @@ import (
 	"nhaancs/pubsub"
 )
 
-// todo: how to schedule this job at midnight
 func RunDisableAllPostsInACategoryGetDisabled(appCtx component.AppContext) subscribedJob {
 	return subscribedJob{
 		Title: "Disable all posts in a category get disabled",
