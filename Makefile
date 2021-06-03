@@ -1,19 +1,31 @@
 include .env
 
+createnetwork: 
+	@docker network create ${DOCKER_NETWORK}
 rundb:
-	@docker run -d --name mysql --privileged=true -p 3306:3306 \
+	@docker run -d \
+	--network ${DOCKER_NETWORK} \
+	--name mysql \
+	--privileged=true \
+	-p 3306:3306 \
 	-e MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD} \
 	-e MYSQL_USER=${DB_USER} \
 	-e MYSQL_PASSWORD=${DB_PASSWORD} \
 	-e MYSQL_DATABASE=${DB_NAME} \
-	-v ~/mysql:/bitnami \
 	bitnami/mysql:8.0
-buildmigrator:
-	@docker build -t migrator ./migrator
 startdb:
 	@docker start mysql
+buildmigrator:
+	@docker build -t migrator ./migrator
 migrateup:
-	@docker run --network host migrator -path="/migrations/" -database "mysql://${DSN}" up
+	@docker rm -f migrator && \
+	docker run \
+	--name migrator \
+	--network ${DOCKER_NETWORK} \
+	migrator \
+	-path="/migrations/" \
+	-database "mysql://${DSN}" \
+	up
 start:
 	@PORT="${PORT}" \
 	GIN_MODE="${GIN_MODE}" \
@@ -27,7 +39,14 @@ start:
 	go run .
 fmt:
 	@go fmt ./...
-deploy:
-	@./deploy.sh
 
-.PHONY: rundb startdb migrateup buildmigrator start fmt
+setpermissions:
+	@chmod +x ./deploy/deploy.sh ./deploy/migratedb.sh ./deploy/setupserver.sh
+setupserver:
+	@./deploy/setupserver.sh
+migratedb:
+	@./deploy/migratedb.sh
+deploy:
+	@./deploy/deploy.sh
+
+.PHONY: rundb startdb migrateup buildmigrator start fmt deploy migratedb setupserver setpermissions

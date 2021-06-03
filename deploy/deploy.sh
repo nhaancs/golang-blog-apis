@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-# // todo
-# - custom sh files
-# - deploy to server
-# - do migrations
-
 if [ -f .env ]
 then
   export $(cat .env | sed 's/#.*//g' | xargs)
@@ -17,7 +12,7 @@ docker save -o ${APP_NAME}.tar ${APP_NAME}
 
 echo "Deploying..."
 scp -o StrictHostKeyChecking=no ./${APP_NAME}.tar ${DEPLOY_CONNECT}:~
-ssh -o StrictHostKeyChecking=no ${DEPLOY_CONNECT} 'bash -s' < ./deploy/prod.sh
+ssh -o StrictHostKeyChecking=no ${DEPLOY_CONNECT} APP_NAME="bbb" 'bash -s' < ./deploy/prod/runapp.sh
 
 echo "Cleaning..."
 rm -f ./${APP_NAME}.tar

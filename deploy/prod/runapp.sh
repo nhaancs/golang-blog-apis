@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-if [ -f .env ]
-then
-  export $(cat .env | sed 's/#.*//g' | xargs)
-fi
-
 docker load -i ${APP_NAME}.tar
 docker rm -f ${APP_NAME}
 
