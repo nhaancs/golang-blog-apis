@@ -43,9 +43,11 @@ setpermissions:
 	@chmod +x ./deploy/deploy.sh ./deploy/migratedb.sh ./deploy/setupserver.sh
 setupserver:
 	@./deploy/setupserver.sh
+setupjaeger:
+	@./deploy/setupjaeger.sh
 migratedb:
 	@./deploy/migratedb.sh
 deploy:
 	@./deploy/deploy.sh
 
-.PHONY: rundb startdb migrateup start fmt deploy migratedb setupserver setpermissions
+.PHONY: rundb startdb migrateup start fmt deploy migratedb setupserver setpermissions setupjaeger
