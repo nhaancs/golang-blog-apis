@@ -11,10 +11,12 @@ import (
 	ginfavorite "nhaancs/modules/favorite/transport/gin"
 	ginpost "nhaancs/modules/post/transport/gin"
 	ginupload "nhaancs/modules/upload/transport/gin"
+	userstorage "nhaancs/modules/user/store"
 	ginuser "nhaancs/modules/user/transport/gin"
 	"nhaancs/pubsub/pblocal"
 	"nhaancs/socketengine"
 	"nhaancs/subscriber"
+	"nhaancs/memcache"
 	"os"
 	"strconv"
 
@@ -60,35 +62,38 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 		log.Fatalln(err)
 	}
 
+	userStore := userstorage.NewSQLStore(appCtx.GetMainDBConnection())
+	userCachingStore := memcache.NewUserCaching(memcache.NewCaching(), userStore)
+
 	r.Use(middleware.Recover(appCtx))
 	r.Use(middleware.RequiredAuthOrNot(appCtx))
 
 	v1 := r.Group("v1")
 	v1.POST("/register", ginuser.Register(appCtx))
 	v1.POST("/login", ginuser.Login(appCtx))
-	v1.GET("/profile", middleware.RequiredAuth(appCtx), ginuser.GetProfile(appCtx))
-	v1.GET("/favorited-posts", middleware.RequiredAuth(appCtx), ginfavorite.ListFavoritedPostsOfAUser(appCtx))
-	v1.POST("/upload-image", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), ginupload.UploadImage(appCtx))
+	v1.GET("/profile", middleware.RequiredAuth(appCtx, userCachingStore), ginuser.GetProfile(appCtx))
+	v1.GET("/favorited-posts", middleware.RequiredAuth(appCtx, userCachingStore), ginfavorite.ListFavoritedPostsOfAUser(appCtx))
+	v1.POST("/upload-image", middleware.RequiredAuth(appCtx, userCachingStore), middleware.RequiredAdmin(appCtx), ginupload.UploadImage(appCtx))
 	categories := v1.Group("/categories")
 	{
-		categories.POST("", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), gincategory.Create(appCtx))
-		categories.GET("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), gincategory.Get(appCtx))
+		categories.POST("", middleware.RequiredAuth(appCtx, userCachingStore), middleware.RequiredAdmin(appCtx), gincategory.Create(appCtx))
+		categories.GET("/:id", middleware.RequiredAuth(appCtx, userCachingStore), middleware.RequiredAdmin(appCtx), gincategory.Get(appCtx))
 		categories.GET("/slug/:slug", gincategory.Get(appCtx))
 		categories.GET("", gincategory.List(appCtx))
-		categories.PATCH("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), gincategory.Update(appCtx))
-		categories.DELETE("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), gincategory.Delete(appCtx))
+		categories.PATCH("/:id", middleware.RequiredAuth(appCtx, userCachingStore), middleware.RequiredAdmin(appCtx), gincategory.Update(appCtx))
+		categories.DELETE("/:id", middleware.RequiredAuth(appCtx, userCachingStore), middleware.RequiredAdmin(appCtx), gincategory.Delete(appCtx))
 	}
 	posts := v1.Group("/posts")
 	{
-		posts.POST("", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), ginpost.Create(appCtx))
-		posts.GET("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), ginpost.Get(appCtx))
+		posts.POST("", middleware.RequiredAuth(appCtx, userCachingStore), middleware.RequiredAdmin(appCtx), ginpost.Create(appCtx))
+		posts.GET("/:id", middleware.RequiredAuth(appCtx, userCachingStore), middleware.RequiredAdmin(appCtx), ginpost.Get(appCtx))
 		posts.GET("/slug/:slug", ginpost.Get(appCtx))
 		posts.GET("", ginpost.List(appCtx))
-		posts.PATCH("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), ginpost.Update(appCtx))
-		posts.DELETE("/:id", middleware.RequiredAuth(appCtx), middleware.RequiredAdmin(appCtx), ginpost.Delete(appCtx))
-		posts.POST("/:id/favorite", middleware.RequiredAuth(appCtx), middleware.RequiredUser(appCtx), ginfavorite.Favorite(appCtx))
-		posts.DELETE("/:id/unfavorite", middleware.RequiredAuth(appCtx), middleware.RequiredUser(appCtx), ginfavorite.Unfavorite(appCtx))
-		posts.GET("/:id/favorited-users", middleware.RequiredAuth(appCtx), ginfavorite.ListUsersFavoritedAPost(appCtx))
+		posts.PATCH("/:id", middleware.RequiredAuth(appCtx, userCachingStore), middleware.RequiredAdmin(appCtx), ginpost.Update(appCtx))
+		posts.DELETE("/:id", middleware.RequiredAuth(appCtx, userCachingStore), middleware.RequiredAdmin(appCtx), ginpost.Delete(appCtx))
+		posts.POST("/:id/favorite", middleware.RequiredAuth(appCtx, userCachingStore), middleware.RequiredUser(appCtx), ginfavorite.Favorite(appCtx))
+		posts.DELETE("/:id/unfavorite", middleware.RequiredAuth(appCtx, userCachingStore), middleware.RequiredUser(appCtx), ginfavorite.Unfavorite(appCtx))
+		posts.GET("/:id/favorited-users", middleware.RequiredAuth(appCtx, userCachingStore), ginfavorite.ListUsersFavoritedAPost(appCtx))
 	}
 
 	je, err := jg.NewExporter(jg.Options{

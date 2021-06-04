@@ -41,6 +41,10 @@ func (business *loginBiz) Login(ctx context.Context, data *usermodel.UserLogin) 
 
 	// note: span io only (read file, database, call other apis,...)
 	ctx1, span1 := trace.StartSpan(ctx, "user.biz.login.find-user")
+	span1.AddAttributes(
+		trace.StringAttribute("email", data.Email),
+		trace.StringAttribute("email-again", data.Email),
+	)
 	// note: use new created context ctx1
 	user, err := business.storeUser.FindUser(ctx1, map[string]interface{}{"email": data.Email})
 	span1.End()
