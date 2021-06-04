@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-echo "Installing Docker"
+echo "Installing Docker..."
 curl -fsSL https://get.docker.com -o get-docker.sh && chmod +x ./get-docker.sh && ./get-docker.sh
 
-echo "Creating Docker network"
+echo "Creating Docker network..."
 docker network create ${DOCKER_NETWORK}
 
-echo "Starting database container"
+echo "Starting database container..."
 docker rm -f mysql && docker run -d \
   --user root \
   -p 3306:3306 \
@@ -20,7 +20,7 @@ docker rm -f mysql && docker run -d \
   -v ~/mysql_data:/bitnami/mysql/data \
 	bitnami/mysql:8.0
 
-echo "Starting nginx proxy container"
+echo "Starting nginx proxy container..."
 docker rm -f nginx-proxy && docker run -d \
   -p 80:80 -p 443:443 \
   --network ${DOCKER_NETWORK} \
@@ -36,7 +36,7 @@ docker rm -f nginx-proxy && docker run -d \
   -v /var/run/docker.sock:/tmp/docker.sock:ro \
   jwilder/nginx-proxy
 
-echo "Starting Letsencrypt container"
+echo "Starting Letsencrypt container..."
 docker rm -f letsencrypt && docker run -d \
   --name letsencrypt \
   --network ${DOCKER_NETWORK} \

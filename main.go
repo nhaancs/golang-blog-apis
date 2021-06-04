@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"nhaancs/component"
 	"nhaancs/component/uploadprovider"
 	"nhaancs/middleware"
@@ -15,8 +16,12 @@ import (
 	"nhaancs/socketengine"
 	"nhaancs/subscriber"
 	"os"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
+	jg "go.opencensus.io/exporter/jaeger"
+	"go.opencensus.io/plugin/ochttp"
+	"go.opencensus.io/trace"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -86,5 +91,32 @@ func runService(db *gorm.DB, upProvider uploadprovider.UploadProvider, secretKey
 		posts.GET("/:id/favorited-users", middleware.RequiredAuth(appCtx), ginfavorite.ListUsersFavoritedAPost(appCtx))
 	}
 
-	return r.Run()
+	je, err := jg.NewExporter(jg.Options{
+		AgentEndpoint: os.Getenv("TRACING_AGENT_ENPOINT"),
+		Process:       jg.Process{ServiceName: os.Getenv("TRACING_APP_NAME")},
+	})
+	if err != nil {
+		log.Println("Error create exporter: ", err)
+	}
+
+	trace.RegisterExporter(je)
+	// Xac suat request gui ve jaeger. Vi du 100 request chi gui 10 request.
+	probability, err := strconv.ParseFloat(os.Getenv("TRACING_PROBABILITY_SAMPLER"), 64)
+	if err != nil {
+		probability = 0.1
+	}
+	trace.ApplyConfig(trace.Config{DefaultSampler: trace.ProbabilitySampler(probability)})
+
+	port := os.Getenv("PORT")
+	if port != "" {
+		port = "8080"
+	}
+	return http.ListenAndServe(
+		":"+port,
+		&ochttp.Handler{
+			Handler: r,
+		},
+	)
+
+	// return r.Run()
 }

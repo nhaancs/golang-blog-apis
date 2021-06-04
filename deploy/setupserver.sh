@@ -5,7 +5,7 @@ then
   export $(cat .env | sed 's/#.*//g' | xargs)
 fi
 
-echo "Setting up server"
+echo "Setting up server..."
 
 ssh -o StrictHostKeyChecking=no ${DEPLOY_CONNECT} \
   DOCKER_NETWORK=${DOCKER_NETWORK} \
