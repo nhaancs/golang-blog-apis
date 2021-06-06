@@ -8,7 +8,12 @@ fi
 echo "Setting up netdata..."
 
 ssh -o StrictHostKeyChecking=no ${DEPLOY_CONNECT} \
-  "docker rm -f netdata && docker run -d --name=netdata \
+  "docker rm -f netdata && docker run -d \
+      -e VIRTUAL_HOST=netdata.nhannguyen.codes \
+      -e VIRTUAL_PORT=19999 \
+      -e LETSENCRYPT_HOST=netdata.nhannguyen.codes \
+      -e LETSENCRYPT_EMAIL=demo@email.com \
+      --name=netdata \
       -p 19999:19999 \
       -v netdataconfig:/etc/netdata \
       -v netdatalib:/var/lib/netdata \
