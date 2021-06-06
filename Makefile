@@ -48,9 +48,11 @@ setupserver:
 	@./deploy/setupserver.sh
 setupjaeger:
 	@./deploy/setupjaeger.sh
+setupnetdata:
+	@./deploy/setupnetdata.sh
 migratedb:
 	@./deploy/migratedb.sh
 deploy:
 	@./deploy/deploy.sh
 
-.PHONY: rundb startdb migrateup start fmt deploy migratedb setupserver setpermissions setupjaeger
+.PHONY: rundb startdb migrateup start fmt deploy migratedb setupserver setpermissions setupjaeger setupnetdata
