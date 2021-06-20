@@ -11,10 +11,6 @@ ssh -o StrictHostKeyChecking=no ${DEPLOY_CONNECT} \
   "docker rm -f jaeger && docker run -d --name jaeger \
     --network ${DOCKER_NETWORK} \
     -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 \
-    -e VIRTUAL_HOST=${TRACING_VIRTUAL_HOST} \
-    -e VIRTUAL_PORT=${TRACING_VIRTUAL_PORT} \
-    -e LETSENCRYPT_HOST=${TRACING_LETSENCRYPT_HOST} \
-    -e LETSENCRYPT_EMAIL=${TRACING_LETSENCRYPT_EMAIL} \
     -p 5775:5775/udp \
     -p 6831:6831/udp \
     -p 6832:6832/udp \

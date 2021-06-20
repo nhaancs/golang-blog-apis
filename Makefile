@@ -52,7 +52,7 @@ setupnetdata:
 	@./deploy/setupnetdata.sh
 loadtest:
 	@# https://medium.com/@felipedutratine/intelligent-benchmark-with-wrk-163986c1587f
-	@wrk -t6 -c200 -d30s https://api.nhannguyen.codes/v1/categories
+	@wrk -t6 -c200 -d30s https://rest.nhannguyen.codes/v1/categories
 migratedb:
 	@./deploy/migratedb.sh
 deploy:

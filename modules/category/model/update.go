@@ -17,7 +17,7 @@ type CategoryUpdate struct {
 func (CategoryUpdate) TableName() string {
 	return Category{}.TableName()
 }
-
+// todo: we only need to validate a few column get updated
 func (res *CategoryUpdate) Validate() error {
 	res.Name = strings.TrimSpace(res.Name)
 	res.Slug = strings.TrimSpace(res.Slug)
